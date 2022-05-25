@@ -1,0 +1,33 @@
+name = "CreateTmPiDataset"
+uuid = "49a64f13-ced2-4d2c-a6b2-5b9e17ba5cf7"
+keywords = ["meteorology", "climate", "water vapor", "gps"]
+desc = "Download and calculate water-vapor-weighted mean temperature from ERA5"
+authors = ["Nathanael Wong <natgeo.wong@outlook.com>"]
+version = "0.1.0"
+
+[deps]
+Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
+Dierckx = "39dd38d3-220a-591b-8e3c-4c3a8c710a94"
+ERA5Reanalysis = "99c076f5-c00e-46eb-a0bd-7ba31777c146"
+GeoRegions = "b001f823-fa75-4bff-bf55-6610c8f3688a"
+Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
+NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
+NumericalIntegration = "e7bfaba1-d571-5449-8927-abc22e82249b"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
+Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
+
+[compat]
+Dierckx = "0.5"
+ERA5Reanalysis = "^0.1"
+GeoRegions = "^2.1"
+NCDatasets = "0.11"
+NumericalIntegration = "0.3"
+Reexport = "1"
+julia = "^1.6"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]

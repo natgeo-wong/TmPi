@@ -31,8 +31,8 @@ function calculate(e5ds::ERA5Dataset)
     
     tmp = Array{Int16,2}(undef,nlon,nlat)
 
-    tm = Array{Float32,2}(undef,nlon,nlat,ndt*24)
-    pi = Array{Float32,2}(undef,nlon,nlat,ndt*24)
+    tm = Array{Float32,3}(undef,nlon,nlat,ndt*24)
+    Pi = Array{Float32,3}(undef,nlon,nlat,ndt*24)
     
     p = Float32.(p*100)
 
@@ -109,7 +109,7 @@ function calculate(e5ds::ERA5Dataset)
             ipp = @view ipv[ind]
 
             tm[ilon,ilat,it] = integrate(ipp,top) / integrate(ipp,btm)
-            pi[ilon,ilat,it] = calcTm2Pi(tm[ilon,ilat,it])
+            Pi[ilon,ilat,it] = calcTm2Pi(tm[ilon,ilat,it])
 
         end
 

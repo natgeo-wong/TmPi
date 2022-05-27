@@ -12,7 +12,7 @@ function create(
     tair = PressureVariable("t",hPa=1)
     shum = PressureVariable("q",hPa=1)
 
-    # downloadERA5(e5ds,[psfc,tsfc,tdew])
+    downloadERA5(e5ds,[psfc,tsfc,tdew])
     downloadERA5(e5ds,[tair,shum],isprecise)
 
     calculate(e5ds,isprecise)

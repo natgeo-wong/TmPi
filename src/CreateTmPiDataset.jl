@@ -11,8 +11,8 @@ using Reexport
 @reexport using Dates
 @reexport using GeoRegions
 @reexport using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region, ERA5Hourly
-@reexport using ERA5Reanalysis: SingleVariable, PressureVariable, isSingle
-@reexport using ERA5Reanalysis: era5Pressures
+@reexport using ERA5Reanalysis: SingleLevel, PressureLevel, SingleVariable, PressureVariable
+@reexport using ERA5Reanalysis: isSingle, era5Pressures
 
 import Base: download
 

@@ -21,7 +21,7 @@ end
 
 function download(
     e5ds :: ERA5Dataset,
-    evar :: Vector{SingleVariable},
+    evar :: Vector{SingleLevel},
 )
 
     ckeys = cdskey()
@@ -54,7 +54,7 @@ end
 
 function download(
     e5ds :: ERA5Dataset,
-    evar :: Vector{PressureVariable},
+    evar :: Vector{PressureLevel},
     isprecise :: Bool
 )
 

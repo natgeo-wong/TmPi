@@ -1,11 +1,11 @@
-calcTd2e(Td::Float32) = 6.1078 * exp((2.5e6/461.51) * (1/273.16 - 1/Td))
-calce2q(e::Float32,p::Float32) = e * 0.6219838793551742 / (p + e - e * 0.6219838793551742)
+calcTd2e(Td::Float32) = 6.1078 * exp((2.5e6/461.5181) * (1/273.16 - 1/Td))
+calce2q(e::Float32,p::Float32) = e * 0.6219838793551742 / (p - e * 0.3780161206448258)
 calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 
-function calculate(e5ds::ERA5Dataset)
+function calculate(e5ds::ERA5Dataset,isprecise)
     
     dt = e5ds.dtbeg; ndt = daysinmonth(dt) * 24
-    p = era5Pressures(); p = p .< 50; np = length(p)
+    p = era5Pressures(); p = p .> 50; np = length(p)
     
     ind = Vector{Bool}(0,np+2)
     bot = Vector{Float32}(0,np+2)
@@ -14,9 +14,14 @@ function calculate(e5ds::ERA5Dataset)
     ipv = vcat(0,p,0)
 
     sds = NCDataset(joinpath(e5ds.eroot,"tmpnc-single.nc"))
-    pds = Vector{NCDataset}(undef,np)
-    for ip in 1 : np
-        pds[ip] = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-$(p[ip]).nc"))
+    
+    if isprecise
+        pds = Vector{NCDataset}(undef,np)
+        for ip in 1 : np
+            pds[ip] = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-$(p[ip]).nc"))
+        end
+    else
+        pds = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure.nc"))
     end
 
     lsd  = getLandSea(e5ds,ERA5Region(GeoRegion("GLB"),gres=0.25))
@@ -26,8 +31,8 @@ function calculate(e5ds::ERA5Dataset)
     ts = Array{Float32,2}(undef,nlon,nlat)
     td = Array{Float32,2}(undef,nlon,nlat)
     sp = Array{Float32,2}(undef,nlon,nlat)
-    ta = Array{Float32,3}(0    ,nlon,nlat,np+2)
-    sh = Array{Float32,3}(0    ,nlon,nlat,np+2)
+    ta = Array{Float32,3}(0    ,nlon,nlat,np)
+    sh = Array{Float32,3}(0    ,nlon,nlat,np)
     
     tmp = Array{Int16,2}(undef,nlon,nlat)
 
@@ -58,27 +63,48 @@ function calculate(e5ds::ERA5Dataset)
         fv = sds["sp"].attrib["_FillValue"]
         NCDatasets.load!(sds["sp"].var,tmp,:,:,it)
         int2real!(sp,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
+        
+        if isprecise
 
-        for ip = 1 : np
+            for ip = 1 : np
 
-            taip = @view ta[:,:,ip+1]
-            ship = @view sh[:,:,ip+1]
+                taip = @view ta[:,:,ip]
+                ship = @view sh[:,:,ip]
 
-            sc = pds[ip]["t"].attrib["scale_factor"]
-            of = pds[ip]["t"].attrib["add_offset"]
-            mv = pds[ip]["t"].attrib["missing_value"]
-            fv = pds[ip]["t"].attrib["_FillValue"]
-            NCDatasets.load!(pds[ip]["t"].var,tmp,:,:,it)
-            int2real!(taip,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
+                sc = pds[ip]["t"].attrib["scale_factor"]
+                of = pds[ip]["t"].attrib["add_offset"]
+                mv = pds[ip]["t"].attrib["missing_value"]
+                fv = pds[ip]["t"].attrib["_FillValue"]
+                NCDatasets.load!(pds[ip]["t"].var,tmp,:,:,it)
+                int2real!(taip,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
 
-            sc = pds[ip]["q"].attrib["scale_factor"]
-            of = pds[ip]["q"].attrib["add_offset"]
-            mv = pds[ip]["q"].attrib["missing_value"]
-            fv = pds[ip]["q"].attrib["_FillValue"]
-            NCDatasets.load!(pds[ip]["q"].var,tmp,:,:,it)
-            int2real!(ship,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
+                sc = pds[ip]["q"].attrib["scale_factor"]
+                of = pds[ip]["q"].attrib["add_offset"]
+                mv = pds[ip]["q"].attrib["missing_value"]
+                fv = pds[ip]["q"].attrib["_FillValue"]
+                NCDatasets.load!(pds[ip]["q"].var,tmp,:,:,it)
+                int2real!(ship,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
+
+            end
+
+        else
+
+            sc = pds["t"].attrib["scale_factor"]
+            of = pds["t"].attrib["add_offset"]
+            mv = pds["t"].attrib["missing_value"]
+            fv = pds["t"].attrib["_FillValue"]
+            NCDatasets.load!(pds["t"].var,tmp,:,:,:,it)
+            int2real!(ta,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
+
+            sc = pds["q"].attrib["scale_factor"]
+            of = pds["q"].attrib["add_offset"]
+            mv = pds["q"].attrib["missing_value"]
+            fv = pds["q"].attrib["_FillValue"]
+            NCDatasets.load!(pds["q"].var,tmp,:,:,:,it)
+            int2real!(sh,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
 
         end
+
 
         for ilat = 1 : nlat, ilon = 1 : nlon
 
@@ -87,8 +113,8 @@ function calculate(e5ds::ERA5Dataset)
             isp = sp[ilon,ilat]
 
             for ip = 2 : (np+1)
-                ita[ip] = ta[ilon,ilat,ip]
-                ish[ip] = sh[ilon,ilat,ip];
+                ita[ip] = ta[ilon,ilat,ip-1]
+                ish[ip] = sh[ilon,ilat,ip-1]
             end
 
             ita[end] = its

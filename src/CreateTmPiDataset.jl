@@ -14,7 +14,7 @@ using Reexport
 @reexport using ERA5Reanalysis: SingleVariable, PressureVariable, isSingle
 @reexport using ERA5Reanalysis: era5Pressures
 
-import Base: show, read, download
+import Base: download
 
 ## Exporting the following functions:
 export

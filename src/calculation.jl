@@ -7,21 +7,22 @@ function calculate(e5ds::ERA5Dataset,isprecise)
     dt = e5ds.dtbeg; ndt = daysinmonth(dt) * 24
     p = era5Pressures(); p = p[p.>=50]; np = length(p)
     
-    ind = Vector{Bool}(0,np+2)
-    bot = Vector{Float32}(0,np+2)
-    ita = Vector{Float32}(0,np+2)
-    ish = Vector{Float32}(0,np+2)
+    ind = zeros(Bool,np+2)
+    bot = zeros(Float32,np+2)
+    ita = zeros(Float32,np+2)
+    ish = zeros(Float32,np+2)
     ipv = vcat(0,p,0)
 
-    sds = NCDataset(joinpath(e5ds.eroot,"tmpnc-single.nc"))
+    sds = NCDataset(joinpath(e5ds.eroot,"tmpnc-single-$dt.nc"))
     
     if isprecise
         pds = Vector{NCDataset}(undef,np)
         for ip in 1 : np
-            pds[ip] = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-$(p[ip]).nc"))
+            pds[ip] = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-$(p[ip])-$dt.nc"))
         end
     else
-        pds = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure.nc"))
+        tds = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-t-$dt.nc"))
+        qds = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-q-$dt.nc"))
     end
 
     lsd  = getLandSea(e5ds,ERA5Region(GeoRegion("GLB"),gres=0.25))
@@ -89,18 +90,18 @@ function calculate(e5ds::ERA5Dataset,isprecise)
 
         else
 
-            sc = pds["t"].attrib["scale_factor"]
-            of = pds["t"].attrib["add_offset"]
-            mv = pds["t"].attrib["missing_value"]
-            fv = pds["t"].attrib["_FillValue"]
-            NCDatasets.load!(pds["t"].var,tmp,:,:,:,it)
+            sc = tds["t"].attrib["scale_factor"]
+            of = tds["t"].attrib["add_offset"]
+            mv = tds["t"].attrib["missing_value"]
+            fv = tds["t"].attrib["_FillValue"]
+            NCDatasets.load!(tds["t"].var,tmp,:,:,:,it)
             int2real!(ta,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
 
-            sc = pds["q"].attrib["scale_factor"]
-            of = pds["q"].attrib["add_offset"]
-            mv = pds["q"].attrib["missing_value"]
-            fv = pds["q"].attrib["_FillValue"]
-            NCDatasets.load!(pds["q"].var,tmp,:,:,:,it)
+            sc = qds["q"].attrib["scale_factor"]
+            of = qds["q"].attrib["add_offset"]
+            mv = qds["q"].attrib["missing_value"]
+            fv = qds["q"].attrib["_FillValue"]
+            NCDatasets.load!(qds["q"].var,tmp,:,:,:,it)
             int2real!(sh,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
 
         end

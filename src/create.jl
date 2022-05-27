@@ -103,7 +103,7 @@ function downloadERA5(
 
         for evarii in evar
 
-            fnc = joinpath(e5ds.eroot,"tmpnc-pressure-$(evar.varID)-$dtii.nc")
+            fnc = joinpath(e5ds.eroot,"tmpnc-pressure-$(evarii.varID)-$dtii.nc")
             fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
 
             e5dkey = Dict(

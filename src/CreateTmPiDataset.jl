@@ -1,9 +1,14 @@
 module CreateTmPiDataset
 
-## Modules Used
+## Base Modules Used
+using Base64
 using Logging
-using NCDatasets
 using Printf
+
+## Modules Used
+using HTTP
+using JSON
+using NCDatasets
 using Statistics
 
 ## Reexporting exported functions within these modules
@@ -12,9 +17,7 @@ using Reexport
 @reexport using GeoRegions
 @reexport using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region, ERA5Hourly
 @reexport using ERA5Reanalysis: SingleLevel, PressureLevel, SingleVariable, PressureVariable
-@reexport using ERA5Reanalysis: isSingle, era5Pressures
-
-import Base: download
+@reexport using ERA5Reanalysis: isSingle, era5Pressures, download
 
 ## Exporting the following functions:
 export

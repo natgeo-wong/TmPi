@@ -5,7 +5,7 @@ calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 function calculate(e5ds::ERA5Dataset,isprecise)
     
     dt = e5ds.dtbeg; ndt = daysinmonth(dt) * 24
-    p = era5Pressures(); p = p .> 50; np = length(p)
+    p = era5Pressures(); p = p[p.>=50]; np = length(p)
     
     ind = Vector{Bool}(0,np+2)
     bot = Vector{Float32}(0,np+2)

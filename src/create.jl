@@ -12,22 +12,22 @@ function create(
     tair = PressureVariable("t",hPa=1)
     shum = PressureVariable("q",hPa=1)
 
-    download(e5ds,[psfc,tsfc,tdew])
-    download(e5ds,[tair,shum],isprecise)
+    # downloadERA5(e5ds,[psfc,tsfc,tdew])
+    downloadERA5(e5ds,[tair,shum],isprecise)
 
     calculate(e5ds,isprecise)
 
 end
 
-function download(
+function downloadERA5(
     e5ds :: ERA5Dataset,
-    evar :: Vector{SingleLevel},
+    evar :: Vector{SingleVariable{String}},
 )
 
     ckeys = cdskey()
     dtii  = e5ds.dtbeg
 
-    @info "$(modulelog()) - Using CDSAPI in Julia to download $(uppercase(e5ds.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(dtii)."
+    @info "$(modulelog()) - Using CDSAPI in Julia to download SINGLE-LEVEL $(uppercase(e5ds.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(dtii)."
 
     fnc = joinpath(e5ds.eroot,"tmpnc-single.nc")
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
@@ -52,18 +52,18 @@ function download(
 
 end
 
-function download(
+function downloadERA5(
     e5ds :: ERA5Dataset,
-    evar :: Vector{PressureLevel},
+    evar :: Vector{PressureVariable{String}},
     isprecise :: Bool
 )
 
     ckeys = cdskey()
     dtii  = e5ds.dtbeg
 
-    @info "$(modulelog()) - Using CDSAPI in Julia to download $(uppercase(e5ds.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(dtii)."
+    @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(e5ds.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(dtii)."
 
-    plist = era5Pressures(); plist = plist .> 50
+    plist = era5Pressures(); plist = plist[plist.>=50]
 
     if isprecise
 

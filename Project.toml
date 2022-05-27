@@ -6,10 +6,13 @@ authors = ["Nathanael Wong <natgeo.wong@outlook.com>"]
 version = "0.1.0"
 
 [deps]
+Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"
 Dates = "ade2ca70-3891-5945-98fb-dc099432e06a"
 Dierckx = "39dd38d3-220a-591b-8e3c-4c3a8c710a94"
 ERA5Reanalysis = "99c076f5-c00e-46eb-a0bd-7ba31777c146"
 GeoRegions = "b001f823-fa75-4bff-bf55-6610c8f3688a"
+HTTP = "cd3eb016-35fb-5094-929b-558a96fad6f3"
+JSON = "682c06a0-de6a-54ab-a142-c8b1cf79cde6"
 Logging = "56ddb016-857b-54e1-b83d-db4d58db5568"
 NCDatasets = "85f8d34a-cbdd-5861-8df4-14fed0d494ab"
 NumericalIntegration = "e7bfaba1-d571-5449-8927-abc22e82249b"

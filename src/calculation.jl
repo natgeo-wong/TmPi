@@ -25,6 +25,11 @@ function calculate(
     tds = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-t-$dt.nc"))
     qds = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-q-$dt.nc"))
     
+    @info "$(modulelog()) - Loading LandSea Dataset"
+    lsd = tmpi.lsd
+    nlon = length(lsd.lon)
+    nlat = length(lsd.lat)
+    
     p = Float32.(p*100)
 
     for it in 1 : ndt
@@ -149,6 +154,11 @@ function calculate(
     for ip in 1 : np
         pds[ip] = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-$(p[ip])-$dt.nc"))
     end
+    
+    @info "$(modulelog()) - Loading LandSea Dataset"
+    lsd = tmpi.lsd
+    nlon = length(lsd.lon)
+    nlat = length(lsd.lat)
     
     p = Float32.(p*100)
 

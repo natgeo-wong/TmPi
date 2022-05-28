@@ -4,7 +4,8 @@ calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 
 function calculate(
     e5ds :: ERA5Dataset,
-    tmpi :: TmPiDefault
+    tmpi :: TmPiDefault,
+    verbose :: Bool
 )
     
     dt = e5ds.dtbeg; ndt = daysinmonth(dt) * 24
@@ -28,7 +29,9 @@ function calculate(
 
     for it in 1 : ndt
 
-        @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt"
+        if verbose
+            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt"
+        end
 
         sc = sds["t2m"].attrib["scale_factor"]
         of = sds["t2m"].attrib["add_offset"]
@@ -151,8 +154,10 @@ function calculate(
 
     for it in 1 : ndt
 
-        @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt"
-
+        if verbose
+            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt"
+        end
+        
         sc = sds["t2m"].attrib["scale_factor"]
         of = sds["t2m"].attrib["add_offset"]
         mv = sds["t2m"].attrib["missing_value"]

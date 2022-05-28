@@ -37,8 +37,9 @@ end
 
 function create(
     tmpi  :: TmPiDataset,
-    dt    :: Date,
-    eroot :: AbstractString = homedir()
+    dt    :: Date;
+    eroot :: AbstractString = homedir(),
+    verbose :: Bool = false
 )
 
     e5ds = ERA5Hourly(dtbeg=dt,dtend=dt,eroot=eroot)
@@ -52,7 +53,7 @@ function create(
     downloadERA5(e5ds,[psfc,tsfc,tdew])
     downloadERA5(e5ds,[tair,shum],tmpi)
 
-    calculate(e5ds,tmpi)
+    calculate(e5ds,tmpi,verbose)
 
 end
 

@@ -48,8 +48,8 @@ function calculate(e5ds::ERA5Dataset,isprecise)
     end
 
     @info "$(modulelog()) - Preallocating arrays for final Tm and Pi data"
-    tm = zeros(Float32,nlon,nlat,ndt*24)
-    Pi = zeros(Float32,nlon,nlat,ndt*24)
+    tm = zeros(Float32,nlon,nlat,ndt)
+    Pi = zeros(Float32,nlon,nlat,ndt)
     
     p = Float32.(p*100)
 

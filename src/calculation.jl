@@ -36,6 +36,9 @@ function calculate(e5ds::ERA5Dataset,isprecise)
     sh = zeros(Float32,nlon,nlat,np)
     
     tmp = zeros(Int16,nlon,nlat)
+    if !isprecise
+        tmp3D = zeros(Int16,nlon,nlat,np)
+    end
 
     tm = zeros(Float32,nlon,nlat,ndt*24)
     Pi = zeros(Float32,nlon,nlat,ndt*24)
@@ -95,14 +98,14 @@ function calculate(e5ds::ERA5Dataset,isprecise)
             mv = tds["t"].attrib["missing_value"]
             fv = tds["t"].attrib["_FillValue"]
             NCDatasets.load!(tds["t"].var,tmp,:,:,:,it)
-            int2real!(ta,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
+            int2real!(ta,tmp3D,scale=sc,offset=of,mvalue=mv,fvalue=fv)
 
             sc = qds["q"].attrib["scale_factor"]
             of = qds["q"].attrib["add_offset"]
             mv = qds["q"].attrib["missing_value"]
             fv = qds["q"].attrib["_FillValue"]
             NCDatasets.load!(qds["q"].var,tmp,:,:,:,it)
-            int2real!(sh,tmp,scale=sc,offset=of,mvalue=mv,fvalue=fv)
+            int2real!(sh,tmp3D,scale=sc,offset=of,mvalue=mv,fvalue=fv)
 
         end
 

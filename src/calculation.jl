@@ -166,16 +166,16 @@ function calculate(e5ds::ERA5Dataset,isprecise)
         close(qds)
     end
 
-    @info "$(modulelog()) - Saving Tm and Pi data"
+    @info "$(modulelog()) - Saving Tm and Pi data for $dt"
 
-    ERA5Reanalysis.save(
+    save(
         tm,dt,e5ds,
         SingleVariable("t_qwm"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
     )
 
-    ERA5Reanalysis.save(
+    save(
         Pi,dt,e5ds,
         SingleVariable("Pi"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),

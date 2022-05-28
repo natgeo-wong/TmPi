@@ -25,7 +25,7 @@ using Reexport
 
 ## Exporting the following functions:
 export
-        create
+        create, TmPiDataset
 
 ## Abstract SuperTypes
 """

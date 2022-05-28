@@ -3,7 +3,7 @@ function create(
     dt    :: Date;
     eroot :: AbstractString = homedir(),
     verbose :: Bool = false
-) where FT <: Real
+)
 
     e5ds = ERA5Hourly(dtbeg=dt,dtend=dt,eroot=eroot)
 

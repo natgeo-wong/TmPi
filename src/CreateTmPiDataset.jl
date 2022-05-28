@@ -10,14 +10,15 @@ using HTTP
 using JSON
 using NCDatasets
 using Statistics
+using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region, ERA5Hourly
+using ERA5Reanalysis: SingleLevel, PressureLevel, SingleVariable, PressureVariable
+using ERA5Reanalysis: LandSea, getLandSea
+using ERA5Reanalysis: isSingle, era5Pressures, download
 
 ## Reexporting exported functions within these modules
 using Reexport
 @reexport using Dates
 @reexport using GeoRegions
-@reexport using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region, ERA5Hourly
-@reexport using ERA5Reanalysis: SingleLevel, PressureLevel, SingleVariable, PressureVariable
-@reexport using ERA5Reanalysis: isSingle, era5Pressures, download
 
 ## Exporting the following functions:
 export

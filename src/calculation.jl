@@ -103,7 +103,7 @@ function calculate(
             ipp = @view ipv[ind]
 
             tmpi.tm[ilon,ilat,it] = integrate(ipp,top) / integrate(ipp,btm)
-            tmpi.Pi[ilon,ilat,it] = calcTm2Pi(tm[ilon,ilat,it])
+            tmpi.Pi[ilon,ilat,it] = calcTm2Pi(tmpi.tm[ilon,ilat,it])
 
         end
 
@@ -239,7 +239,7 @@ function calculate(
             ipp = @view ipv[ind]
 
             tmpi.tm[ilon,ilat,it] = integrate(ipp,top) / integrate(ipp,btm)
-            tmpi.Pi[ilon,ilat,it] = calcTm2Pi(tm[ilon,ilat,it])
+            tmpi.Pi[ilon,ilat,it] = calcTm2Pi(tmpi.tm[ilon,ilat,it])
 
         end
 

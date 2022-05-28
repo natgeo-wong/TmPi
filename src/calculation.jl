@@ -107,14 +107,14 @@ function calculate(e5ds::ERA5Dataset,isprecise)
             of = tds["t"].attrib["add_offset"]
             mv = tds["t"].attrib["missing_value"]
             fv = tds["t"].attrib["_FillValue"]
-            NCDatasets.load!(tds["t"].var,tmp,:,:,:,it)
+            NCDatasets.load!(tds["t"].var,tmp3D,:,:,:,it)
             int2real!(ta,tmp3D,scale=sc,offset=of,mvalue=mv,fvalue=fv)
 
             sc = qds["q"].attrib["scale_factor"]
             of = qds["q"].attrib["add_offset"]
             mv = qds["q"].attrib["missing_value"]
             fv = qds["q"].attrib["_FillValue"]
-            NCDatasets.load!(qds["q"].var,tmp,:,:,:,it)
+            NCDatasets.load!(qds["q"].var,tmp3D,:,:,:,it)
             int2real!(sh,tmp3D,scale=sc,offset=of,mvalue=mv,fvalue=fv)
 
         end

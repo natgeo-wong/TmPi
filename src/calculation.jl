@@ -5,7 +5,8 @@ calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 function calculate(
     e5ds :: ERA5Dataset,
     tmpi :: TmPiDefault{FT},
-    verbose :: Bool
+    verbose :: Bool,
+    keepraw :: Bool
 ) where FT <: Real
     
     dt = e5ds.dtbeg; ndt = daysinmonth(dt) * 24
@@ -35,7 +36,7 @@ function calculate(
     for it in 1 : ndt
 
         if verbose
-            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt"
+            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt in $(year(dt)) $(monthname(dt))"
         end
 
         sc = sds["t2m"].attrib["scale_factor"]
@@ -129,11 +130,19 @@ function calculate(
         lsd
     )
 
+    if !keepraw
+        @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
+        rm(joinpath(e5ds.eroot,"tmpnc-single-$dt.nc"),force=true)
+        rm(joinpath(e5ds.eroot,"tmpnc-pressure-t-$dt.nc"),force=true)
+        rm(joinpath(e5ds.eroot,"tmpnc-pressure-q-$dt.nc"),force=true)
+    end
 end
 
 function calculate(
     e5ds :: ERA5Dataset,
-    tmpi :: TmPiPrecise{FT}
+    tmpi :: TmPiPrecise{FT},
+    verbose :: Bool,
+    keepraw :: Bool
 ) where FT <: Real
     
     dt = e5ds.dtbeg; ndt = daysinmonth(dt) * 24
@@ -165,7 +174,7 @@ function calculate(
     for it in 1 : ndt
 
         if verbose
-            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt"
+            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt in $(year(dt)) $(monthname(dt))"
         end
 
         sc = sds["t2m"].attrib["scale_factor"]
@@ -265,5 +274,13 @@ function calculate(
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
     )
+
+    if !keepraw
+        @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
+        rm(joinpath(e5ds.eroot,"tmpnc-single-$dt.nc"),force=true)
+        for ip in 1 : np
+           rm(joinpath(e5ds.eroot,"tmpnc-pressure-$(p[ip])-$dt.nc"),force=true)
+        end
+    end
 
 end

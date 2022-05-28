@@ -27,6 +27,14 @@ using Reexport
 export
         create
 
+## Abstract SuperTypes
+"""
+    TmPiDataset
+
+Abstract supertype for temporary arrays used to calculate the Tm and Pi datasets.
+"""
+abstract type TmPiDataset end
+
 ## CreateTmPiDataset.jl logging preface
 
 modulelog() = "$(now()) - CreateTmPiDataset.jl"
@@ -63,5 +71,6 @@ include("backend.jl")
 include("calculation.jl")
 include("cdsapi.jl")
 include("create.jl")
+include("download.jl")
 
 end

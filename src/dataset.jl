@@ -36,7 +36,7 @@ struct TmPiPrecise{FT<:Real} <: TmPiDataset
 end
 
 function TmPiDataset(;
-    isprecise :: Bool,
+    isprecise :: Bool = false,
     FT = Float32
 )
 

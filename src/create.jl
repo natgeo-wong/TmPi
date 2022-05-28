@@ -1,11 +1,11 @@
 function create(
-    tmpi  :: TmPiDataset,
-    dt    :: Date;
-    eroot :: AbstractString = homedir(),
+    tmpi :: TmPiDataset,
+    e5ds :: ERA5Dataset;
+    dt   :: Date,
     verbose :: Bool = false
 )
 
-    e5ds = ERA5Hourly(dtbeg=dt,dtend=dt,eroot=eroot)
+    e5ds = ERA5Hourly(dtbeg=dt,dtend=dt,eroot=joinpath(e5ds.eroot,".."))
 
     psfc = SingleVariable("sp")
     tsfc = SingleVariable("t2m")

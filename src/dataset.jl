@@ -35,12 +35,13 @@ struct TmPiPrecise{FT<:Real} <: TmPiDataset
 
 end
 
-function TmPiDataset(;
+function TmPiDataset(
+    e5ds :: ERA5Hourly;
     isprecise :: Bool = false,
     FT = Float32
 )
 
-    p = era5Pressures(); p = p[p.>=50]
+    p = era5Pressures(); p = p[p.>=50]; np = length(p)
 
     @info "$(modulelog()) - Loading Global LandSea dataset (0.25º resolution)"
     lsd  = getLandSea(e5ds,ERA5Region(GeoRegion("GLB"),gres=0.25))

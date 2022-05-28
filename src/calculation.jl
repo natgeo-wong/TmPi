@@ -148,7 +148,7 @@ function calculate(e5ds::ERA5Dataset,isprecise)
             btm = @view bot[ind]
             ipp = @view ipv[ind]
 
-            tm[ilon,ilat,it] = integrate(ipp,top) / integrate(ipp,btm)
+            tm[ilon,ilat,it] = integrate(ipp,top,TrapezoidalFast()) / integrate(ipp,btm,TrapezoidalFast())
             Pi[ilon,ilat,it] = calcTm2Pi(tm[ilon,ilat,it])
 
         end
@@ -156,7 +156,15 @@ function calculate(e5ds::ERA5Dataset,isprecise)
     end
     
     close(sds)
-    close(pds)
+    
+    if isprecise
+        for pdsii in pds
+            close(pdsii)
+        end
+    else
+        close(tds)
+        close(qds)
+    end
 
     @info "$(modulelog()) - Saving Tm and Pi data"
 

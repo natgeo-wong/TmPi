@@ -7,14 +7,17 @@ function calculate(e5ds::ERA5Dataset,isprecise)
     dt = e5ds.dtbeg; ndt = daysinmonth(dt) * 24
     p = era5Pressures(); p = p[p.>=50]; np = length(p)
     
+    @info "$(modulelog()) - Preallocating arrays for numerical integration to calculate Tm"
     ind = zeros(Bool,np+2)
     bot = zeros(Float32,np+2)
     ita = zeros(Float32,np+2)
     ish = zeros(Float32,np+2)
     ipv = vcat(0,p,0)
 
+    @info "$(modulelog()) - Opening NetCDF files for Single Level datasets"
     sds = NCDataset(joinpath(e5ds.eroot,"tmpnc-single-$dt.nc"))
     
+    @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets"
     if isprecise
         pds = Vector{NCDataset}(undef,np)
         for ip in 1 : np
@@ -25,27 +28,34 @@ function calculate(e5ds::ERA5Dataset,isprecise)
         qds = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-q-$dt.nc"))
     end
 
+    @info "$(modulelog()) - Loading Global LandSea dataset (0.25º resolution)"
     lsd  = getLandSea(e5ds,ERA5Region(GeoRegion("GLB"),gres=0.25))
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 
+    @info "$(modulelog()) - Preallocating arrays for downloaded ERA5 datasets"
     ts = zeros(Float32,nlon,nlat)
     td = zeros(Float32,nlon,nlat)
     sp = zeros(Float32,nlon,nlat)
     ta = zeros(Float32,nlon,nlat,np)
     sh = zeros(Float32,nlon,nlat,np)
     
+    @info "$(modulelog()) - Preallocating 2D array for loading 2D raw data from NetCDF"
     tmp = zeros(Int16,nlon,nlat)
     if !isprecise
+        @info "$(modulelog()) - Preallocating 3D array for loading 3D raw data from NetCDF"
         tmp3D = zeros(Int16,nlon,nlat,np)
     end
 
+    @info "$(modulelog()) - Preallocating arrays for final Tm and Pi data"
     tm = zeros(Float32,nlon,nlat,ndt*24)
     Pi = zeros(Float32,nlon,nlat,ndt*24)
     
     p = Float32.(p*100)
 
     for it in 1 : ndt
+
+        @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt"
 
         sc = sds["t2m"].attrib["scale_factor"]
         of = sds["t2m"].attrib["add_offset"]
@@ -147,6 +157,8 @@ function calculate(e5ds::ERA5Dataset,isprecise)
     
     close(sds)
     close(pds)
+
+    @info "$(modulelog()) - Saving Tm and Pi data"
 
     ERA5Reanalysis.save(
         tm,dt,e5ds,

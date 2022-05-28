@@ -29,16 +29,16 @@ function calculate(e5ds::ERA5Dataset,isprecise)
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 
-    ts = Array{Float32,2}(undef,nlon,nlat)
-    td = Array{Float32,2}(undef,nlon,nlat)
-    sp = Array{Float32,2}(undef,nlon,nlat)
-    ta = Array{Float32,3}(0    ,nlon,nlat,np)
-    sh = Array{Float32,3}(0    ,nlon,nlat,np)
+    ts = zeros(Float32,nlon,nlat)
+    td = zeros(Float32,nlon,nlat)
+    sp = zeros(Float32,nlon,nlat)
+    ta = zeros(Float32,nlon,nlat,np)
+    sh = zeros(Float32,nlon,nlat,np)
     
-    tmp = Array{Int16,2}(undef,nlon,nlat)
+    tmp = zeros(Int16,nlon,nlat)
 
-    tm = Array{Float32,3}(undef,nlon,nlat,ndt*24)
-    Pi = Array{Float32,3}(undef,nlon,nlat,ndt*24)
+    tm = zeros(Float32,nlon,nlat,ndt*24)
+    Pi = zeros(Float32,nlon,nlat,ndt*24)
     
     p = Float32.(p*100)
 

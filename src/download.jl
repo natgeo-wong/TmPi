@@ -37,8 +37,8 @@ end
 function downloadERA5(
     e5ds :: ERA5Dataset,
     evar :: Vector{PressureVariable{String}},
-    tmpi :: TmPiDefault
-)
+    tmpi :: TmPiDefault{FT}
+) where FT <: Real
 
     ckeys = cdskey()
     dtii  = e5ds.dtbeg
@@ -79,8 +79,8 @@ end
 function downloadERA5(
     e5ds :: ERA5Dataset,
     evar :: Vector{PressureVariable{String}},
-    tmpi :: TmPiPrecise
-)
+    tmpi :: TmPiPrecise{FT}
+) where FT <: Real
 
     ckeys = cdskey()
     dtii  = e5ds.dtbeg

@@ -67,10 +67,11 @@ end
 
 ## Including other files in the module
 
-include("backend.jl")
-include("calculation.jl")
-include("cdsapi.jl")
+include("dataset.jl")
 include("create.jl")
+include("cdsapi.jl")
 include("download.jl")
+include("calculation.jl")
+include("backend.jl")
 
 end

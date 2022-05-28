@@ -12,7 +12,7 @@ function calculate(e5ds::ERA5Dataset,isprecise)
     bot = zeros(Float32,np+2)
     ita = zeros(Float32,np+2)
     ish = zeros(Float32,np+2)
-    ipv = vcat(0,p,0)
+    ipv = Float32.(vcat(0,p,0))
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets"
     sds = NCDataset(joinpath(e5ds.eroot,"tmpnc-single-$dt.nc"))
@@ -132,7 +132,7 @@ function calculate(e5ds::ERA5Dataset,isprecise)
             end
 
             ita[end] = its
-            ish[end] = calce2q(calcTd2e(itd),isp)
+            ish[end] = Float32(calce2q(Float32(calcTd2e(itd)),isp))
             ipv[end] = isp
 
             for ip = 2 : (np+2)

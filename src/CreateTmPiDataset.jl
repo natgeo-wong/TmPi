@@ -9,7 +9,10 @@ using Printf
 using HTTP
 using JSON
 using NCDatasets
+using NumericalIntegration
 using Statistics
+
+## Import relevant functions from ERA5Reanalysis.jl
 using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region, ERA5Hourly
 using ERA5Reanalysis: SingleLevel, PressureLevel, SingleVariable, PressureVariable
 using ERA5Reanalysis: LandSea, getLandSea

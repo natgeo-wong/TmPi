@@ -1,4 +1,4 @@
-calcTd2e(Td::Float32) = 6.1078 * exp((2.5e6/461.5181) * (1/273.16 - 1/Td))
+calcTd2e(Td::Float32) = 611.657 * exp((2.5e6/461.5181) * (1/273.16 - 1/Td))
 calce2q(e::Float32,p::Float32) = e * 0.6219838793551742 / (p - e * 0.3780161206448258)
 calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 
@@ -30,8 +30,6 @@ function calculate(
     lsd = tmpi.lsd
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
-    
-    p = Float32.(p*100)
 
     for it in 1 : ndt
 
@@ -168,8 +166,6 @@ function calculate(
     lsd = tmpi.lsd
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
-    
-    p = Float32.(p*100)
 
     for it in 1 : ndt
 

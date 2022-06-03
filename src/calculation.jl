@@ -4,11 +4,12 @@ calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 
 function calculate(
     tmpi :: TmPiDefault,
+    date :: Date,
     verbose :: Bool,
     keepraw :: Bool
 )
     
-    dt = tmpi.dates; ndt = daysinmonth(dt) * 24
+    ndt = daysinmonth(date) * 24
     p = tmpi.p; np = length(p)
     
     @info "$(modulelog()) - Preallocating arrays for numerical integration to calculate Tm"
@@ -19,11 +20,11 @@ function calculate(
     ipv = Float32.(vcat(0,p,0))
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets"
-    sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$dt.nc"))
+    sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"))
     
     @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets"
-    tds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-t-$dt.nc"))
-    qds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-q-$dt.nc"))
+    tds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-t-$date.nc"))
+    qds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-q-$date.nc"))
     
     @info "$(modulelog()) - Loading LandSea Dataset"
     lsd = tmpi.lsd
@@ -33,7 +34,7 @@ function calculate(
     for it in 1 : ndt
 
         if verbose
-            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt in $(year(dt)) $(monthname(dt))"
+            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt in $(year(date)) $(monthname(date))"
         end
 
         sc = sds["t2m"].attrib["scale_factor"]
@@ -111,17 +112,17 @@ function calculate(
     close(tds)
     close(qds)
 
-    @info "$(modulelog()) - Saving Tm and Pi data for $dt"
+    @info "$(modulelog()) - Saving Tm and Pi data for $(year(date)) $(monthname(date))"
 
     save(
-        view(tmpi.tm,:,:,1:ndt),dt,tmpi,
+        view(tmpi.tm,:,:,1:ndt),date,tmpi,
         SingleVariable("t_qwm"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
     )
 
     save(
-        view(tmpi.Pi,:,:,1:ndt),dt,tmpi,
+        view(tmpi.Pi,:,:,1:ndt),date,tmpi,
         SingleVariable("Pi"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
@@ -129,19 +130,20 @@ function calculate(
 
     if !keepraw
         @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
-        rm(joinpath(tmpi.eroot,"tmpnc-single-$dt.nc"),force=true)
-        rm(joinpath(tmpi.eroot,"tmpnc-pressure-t-$dt.nc"),force=true)
-        rm(joinpath(tmpi.eroot,"tmpnc-pressure-q-$dt.nc"),force=true)
+        rm(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"),force=true)
+        rm(joinpath(tmpi.eroot,"tmpnc-pressure-t-$date.nc"),force=true)
+        rm(joinpath(tmpi.eroot,"tmpnc-pressure-q-$date.nc"),force=true)
     end
 end
 
 function calculate(
     tmpi :: TmPiPrecise,
+    date :: Date,
     verbose :: Bool,
     keepraw :: Bool
 )
     
-    dt = tmpi.dates; ndt = daysinmonth(dt) * 24
+    ndt = daysinmonth(date) * 24
     p = tmpi.p; np = length(p)
     
     @info "$(modulelog()) - Preallocating arrays for numerical integration to calculate Tm"
@@ -152,12 +154,12 @@ function calculate(
     ipv = Float32.(vcat(0,p,0))
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets"
-    sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$dt.nc"))
+    sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"))
     
     @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets"
     pds = Vector{NCDataset}(undef,np)
     for ip in 1 : np
-        pds[ip] = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-$(p[ip])-$dt.nc"))
+        pds[ip] = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-$(p[ip])-$date.nc"))
     end
     
     @info "$(modulelog()) - Loading LandSea Dataset"
@@ -168,7 +170,7 @@ function calculate(
     for it in 1 : ndt
 
         if verbose
-            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt in $(year(dt)) $(monthname(dt))"
+            @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt in $(year(date)) $(monthname(date))"
         end
 
         sc = sds["t2m"].attrib["scale_factor"]
@@ -253,17 +255,17 @@ function calculate(
         close(pdsii)
     end
 
-    @info "$(modulelog()) - Saving Tm and Pi data for $dt"
+    @info "$(modulelog()) - Saving Tm and Pi data for $(year(date)) $(monthname(date))"
 
     save(
-        view(tmpi.tm,:,:,1:ndt),dt,tmpi,
+        view(tmpi.tm,:,:,1:ndt),date,tmpi,
         SingleVariable("t_qwm"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
     )
 
     save(
-        view(tmpi.Pi,:,:,1:ndt),dt,tmpi,
+        view(tmpi.Pi,:,:,1:ndt),date,tmpi,
         SingleVariable("Pi"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
@@ -271,9 +273,9 @@ function calculate(
 
     if !keepraw
         @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
-        rm(joinpath(tmpi.eroot,"tmpnc-single-$dt.nc"),force=true)
+        rm(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"),force=true)
         for ip in 1 : np
-           rm(joinpath(tmpi.eroot,"tmpnc-pressure-$(p[ip])-$dt.nc"),force=true)
+           rm(joinpath(tmpi.eroot,"tmpnc-pressure-$(p[ip])-$date.nc"),force=true)
         end
     end
 

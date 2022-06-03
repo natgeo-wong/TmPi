@@ -1,28 +1,28 @@
 function e5dfnc(
     tmpi :: TmPiDataset,
 	evar :: SingleLevel,
-    dt   :: TimeType
+    date :: TimeType
 )
 
-    dts = yr2str(dt)
+    dts = yr2str(date)
     fol = joinpath(tmpi.eroot,dts)
-    fnc = evar.varID * "-" * yrmo2str(dt) * ".nc"
+    fnc = evar.varID * "-" * yrmo2str(date) * ".nc"
     return joinpath(fol,fnc)
 
 end
 
 function save(
     data :: AbstractArray{<:Real,3},
-    dt   :: Date,
+    date :: Date,
     tmpi :: TmPiDataset,
     evar :: ERA5Variable,
     ereg :: ERA5Region,
     lsd  :: LandSea
 )
 
-    @info "$(modulelog()) - Saving raw $(tmpi.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(dt)) $(Dates.monthname(dt)) ..."
+    @info "$(modulelog()) - Saving raw $(tmpi.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) $(Dates.monthname(date)) ..."
 
-    fnc = e5dfnc(tmpi,ereg,dt)
+    fnc = e5dfnc(tmpi,ereg,date)
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
     if isfile(fnc)
         @info "$(modulelog()) - Stale NetCDF file $(fnc) detected.  Overwriting ..."
@@ -35,7 +35,7 @@ function save(
     ))
     ds.attrib["doi"] = tmpi.sldoi
 
-    nhr = 24 * daysinmonth(dt)
+    nhr = 24 * daysinmonth(date)
     scale,offset = ncoffsetscale(data)
 
     ds.dim["longitude"] = length(lsd.lon);
@@ -53,7 +53,7 @@ function save(
     ))
 
     nctime = defVar(ds,"time",Int32,("time",),attrib = Dict(
-        "units"     => "hours since $(dt) 00:00:00.0",
+        "units"     => "hours since $(date) 00:00:00.0",
         "long_name" => "time",
         "calendar"  => "gregorian",
     ))
@@ -79,6 +79,6 @@ function save(
 
     close(ds)
 
-    @info "$(modulelog()) - Raw $(uppercase(tmpi.lname)) $(evar.vname) in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(dt)) $(Dates.monthname(dt)) has been saved into $(fnc)."
+    @info "$(modulelog()) - Raw $(uppercase(tmpi.lname)) $(evar.vname) in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) $(Dates.monthname(date)) has been saved into $(fnc)."
 
 end

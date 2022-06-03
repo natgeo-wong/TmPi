@@ -1,19 +1,20 @@
-function downloadERA5(
+function download(
     tmpi :: TmPiDataset,
+    date :: Date,
     evar :: Vector{SingleVariable{String}},
 )
 
     ckeys = cdskey()
 
-    @info "$(modulelog()) - Using CDSAPI in Julia to download SINGLE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(tmpi.dates)."
+    @info "$(modulelog()) - Using CDSAPI in Julia to download SINGLE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
 
-    fnc = joinpath(tmpi.eroot,"tmpnc-single-$(tmpi.dates).nc")
+    fnc = joinpath(tmpi.eroot,"tmpnc-single-$(date).nc")
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
 
     e5dkey = Dict(
         "product_type" => tmpi.ptype,
-        "year"         => year(tmpi.dates),
-        "month"        => month(tmpi.dates),
+        "year"         => year(date),
+        "month"        => month(date),
         "day"          => collect(1:31),
         "variable"     => [evarii.lname for evarii in evar],
         "area"         => [90, 0, -90, 360],
@@ -33,24 +34,25 @@ function downloadERA5(
 
 end
 
-function downloadERA5(
+function download(
     tmpi :: TmPiDefault,
+    date :: Date,
     evar :: Vector{PressureVariable{String}}
 )
 
     ckeys = cdskey()
 
-    @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(tmpi.dates)."
+    @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
 
     for evarii in evar
 
-        fnc = joinpath(tmpi.eroot,"tmpnc-pressure-$(evarii.varID)-$(tmpi.dates).nc")
+        fnc = joinpath(tmpi.eroot,"tmpnc-pressure-$(evarii.varID)-$(date).nc")
         fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
 
         e5dkey = Dict(
             "product_type"   => tmpi.ptype,
-            "year"           => year(tmpi.dates),
-            "month"          => month(tmpi.dates),
+            "year"           => year(date),
+            "month"          => month(date),
             "day"            => collect(1:31),
             "variable"       => evarii.lname,
             "pressure_level" => tmpi.p,
@@ -73,24 +75,25 @@ function downloadERA5(
 
 end
 
-function downloadERA5(
+function download(
     tmpi :: TmPiPrecise,
+    date :: Date,
     evar :: Vector{PressureVariable{String}}
 )
 
     ckeys = cdskey()
 
-    @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(tmpi.dates)."
+    @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
 
     for ip in tmpi.p
 
-        fnc = joinpath(tmpi.eroot,"tmpnc-pressure-$ip-$(tmpi.dates).nc")
+        fnc = joinpath(tmpi.eroot,"tmpnc-pressure-$ip-$(date).nc")
         fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
 
         e5dkey = Dict(
             "product_type"   => tmpi.ptype,
-            "year"           => year(tmpi.dates),
-            "month"          => month(tmpi.dates),
+            "year"           => year(date),
+            "month"          => month(date),
             "day"            => collect(1:31),
             "variable"       => [evarii.lname for evarii in evar],
             "pressure_level" => ip,

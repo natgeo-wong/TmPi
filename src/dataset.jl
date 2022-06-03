@@ -1,4 +1,4 @@
-struct TmPiDefault{ST<:AbstractString, DT<:TimeType} <: TmPiDataset
+struct TmPiDefault{ST<:AbstractString} <: TmPiDataset
 
     ts :: Array{Float32,2}
     td :: Array{Float32,2}
@@ -17,13 +17,12 @@ struct TmPiDefault{ST<:AbstractString, DT<:TimeType} <: TmPiDataset
     lname :: ST
     ptype :: ST
 	sldoi :: ST
-    dates :: DT
     eroot :: ST
     emask :: ST
 
 end
 
-struct TmPiPrecise{ST<:AbstractString, DT<:TimeType} <: TmPiDataset
+struct TmPiPrecise{ST<:AbstractString} <: TmPiDataset
 
     ts :: Array{Float32,2}
     td :: Array{Float32,2}
@@ -41,26 +40,23 @@ struct TmPiPrecise{ST<:AbstractString, DT<:TimeType} <: TmPiDataset
     lname :: ST
     ptype :: ST
 	sldoi :: ST
-    dates :: DT
     eroot :: ST
     emask :: ST
 
 end
 
-function TmPiPlaceholder(;
-    date :: Date,
-    efol :: AbstractString = homedir(),
+function TmPiDataset(;
+    eroot :: AbstractString = homedir(),
     isprecise :: Bool = false,
     FT = Float32,
-    ST = String,
-    DT = Date
+    ST = String
 )
 
     p = era5Pressures(); p = p[p.>=50]; np = length(p)
     p = Float32.(p*100)
 
     @info "$(modulelog()) - Loading Global LandSea dataset (0.25º resolution)"
-    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),gres=0.25),eroot=efol)
+    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),gres=0.25),eroot=eroot)
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 
@@ -83,13 +79,13 @@ function TmPiPlaceholder(;
         return TmPiPrecise{FT,ST,DT}(
             ts, td, sp, ta, sh, tm, Pi, p, tmp2D,
             "ERA5 Hourly", "reanalysis", "10.24381/cds.adbb2d47",
-            date, efol, efol
+            eroot, eroot
         )
     else
         return TmPiDefault{FT,ST,DT}(
             ts, td, sp, ta, sh, tm, Pi, p, tmp2D, tmp3D,
             "ERA5 Hourly", "reanalysis", "10.24381/cds.adbb2d47",
-            date, efol, efol
+            eroot, eroot
         )
     end
 

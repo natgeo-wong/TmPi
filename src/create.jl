@@ -1,5 +1,6 @@
 function create(
     tmpi :: ERA5Dataset;
+    date :: Date,
     verbose :: Bool = false,
     keepraw :: Bool = false
 )
@@ -10,9 +11,9 @@ function create(
     tair = PressureVariable("t",hPa=1)
     shum = PressureVariable("q",hPa=1)
 
-    downloadERA5(tmpi,[psfc,tsfc,tdew])
-    downloadERA5(tmpi,[tair,shum])
+    download(tmpi,date,[psfc,tsfc,tdew])
+    download(tmpi,date,[tair,shum])
 
-    calculate(tmpi,verbose,keepraw)
+    calculate(tmpi,date,verbose,keepraw)
 
 end

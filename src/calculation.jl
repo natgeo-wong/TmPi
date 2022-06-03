@@ -19,17 +19,19 @@ function calculate(
     ish = zeros(Float32,np+2)
     ipv = Float32.(vcat(0,p,0))
 
-    @info "$(modulelog()) - Opening NetCDF files for Single Level datasets"
+    @info "$(modulelog()) - Opening NetCDF files for Single Level datasets in $(year(date)) $(monthname(date))"
     sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"))
     
-    @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets"
+    @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets in $(year(date)) $(monthname(date))"
     tds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-t-$date.nc"))
     qds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-q-$date.nc"))
     
-    @info "$(modulelog()) - Loading LandSea Dataset"
+    @info "$(modulelog()) - Loading the Global (0.25º Resolution) LandSea Dataset"
     lsd = tmpi.lsd
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
+
+    @info "$(modulelog()) - Calculating Tm and Pi for $(year(date)) $(monthname(date))"
 
     for it in 1 : ndt
 
@@ -153,19 +155,21 @@ function calculate(
     ish = zeros(Float32,np+2)
     ipv = Float32.(vcat(0,p,0))
 
-    @info "$(modulelog()) - Opening NetCDF files for Single Level datasets"
+    @info "$(modulelog()) - Opening NetCDF files for Single Level datasets in $(year(date)) $(monthname(date))"
     sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"))
     
-    @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets"
+    @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets in $(year(date)) $(monthname(date))"
     pds = Vector{NCDataset}(undef,np)
     for ip in 1 : np
         pds[ip] = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-$(p[ip])-$date.nc"))
     end
     
-    @info "$(modulelog()) - Loading LandSea Dataset"
+    @info "$(modulelog()) - Loading the Global (0.25º Resolution) LandSea Dataset"
     lsd = tmpi.lsd
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
+
+    @info "$(modulelog()) - Calculating Tm and Pi for $(year(date)) $(monthname(date))"
 
     for it in 1 : ndt
 

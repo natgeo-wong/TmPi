@@ -16,7 +16,7 @@ using Statistics
 using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region
 using ERA5Reanalysis: SingleLevel, PressureLevel, SingleVariable, PressureVariable
 using ERA5Reanalysis: LandSea, getLandSea
-using ERA5Reanalysis: isSingle, era5Pressures, download, save, e5dfnc
+using ERA5Reanalysis: isSingle, era5Pressures, download
 
 ## Reexporting exported functions within these modules
 using Reexport
@@ -74,6 +74,7 @@ include("create.jl")
 include("cdsapi.jl")
 include("download.jl")
 include("calculation.jl")
+include("filesystem.jl")
 include("backend.jl")
 
 end

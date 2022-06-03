@@ -33,7 +33,7 @@ function calculate(
 
     @info "$(modulelog()) - Calculating Tm and Pi for $(year(date)) $(monthname(date))"
 
-    for it in 1 : ndt
+    for it in 1 : 2
 
         if verbose
             @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt in $(year(date)) $(monthname(date))"

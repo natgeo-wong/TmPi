@@ -22,7 +22,7 @@ function save(
 
     @info "$(modulelog()) - Saving raw $(tmpi.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) $(Dates.monthname(date)) ..."
 
-    fnc = e5dfnc(tmpi,ereg,date)
+    fnc = e5dfnc(tmpi,evar,date)
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
     if isfile(fnc)
         @info "$(modulelog()) - Stale NetCDF file $(fnc) detected.  Overwriting ..."

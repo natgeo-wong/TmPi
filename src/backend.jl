@@ -1,4 +1,5 @@
 yr2str(date::TimeType) = Dates.format(date,dateformat"yyyy")
+yrmo2str(date::TimeType) = Dates.format(date,dateformat"yyyymm")
 
 function int2real!(
     oarray :: AbstractArray{FT},
@@ -19,5 +20,24 @@ function int2real!(
     end
 
     return
+
+end
+
+function ncoffsetscale(data::AbstractArray{<:Real})
+
+    dmax = data[findfirst(!isnan,data)]
+    dmin = data[findfirst(!isnan,data)]
+    for ii = 1 : length(data)
+        dataii = data[ii]
+        if !isnan(dataii)
+            if dataii > dmax; dmax = dataii end
+            if dataii < dmin; dmin = dataii end
+        end
+    end
+
+    scale = (dmax-dmin) / 65531;
+    offset = (dmax+dmin-scale) / 2;
+
+    return scale,offset
 
 end

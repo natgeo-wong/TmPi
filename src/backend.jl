@@ -1,3 +1,5 @@
+yr2str(date::TimeType) = Dates.format(date,dateformat"yyyy")
+
 function int2real!(
     oarray :: AbstractArray{FT},
     iarray :: AbstractArray{Int16};

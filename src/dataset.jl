@@ -9,7 +9,8 @@ struct TmPiDefault{ST<:AbstractString} <: TmPiDataset
     tm :: Array{Float32,3}
     Pi :: Array{Float32,3}
 
-    p  :: Vector{Float32}
+    lsd :: LandSea
+    p   :: Vector{Float32}
 
     tmp2D :: Array{Int16,2}
     tmp3D :: Array{Int16,3}
@@ -33,6 +34,7 @@ struct TmPiPrecise{ST<:AbstractString} <: TmPiDataset
     tm :: Array{Float32,3}
     Pi :: Array{Float32,3}
 
+    lsd :: LandSea
     p  :: Vector{Float32}
 
     tmp2D :: Array{Int16,2}
@@ -76,14 +78,14 @@ function TmPiDataset(;
     Pi = zeros(Float32,nlon,nlat,744) # 31*24 = 744
 
     if isprecise
-        return TmPiPrecise{FT,ST,DT}(
-            ts, td, sp, ta, sh, tm, Pi, p, tmp2D,
+        return TmPiPrecise{ST}(
+            ts, td, sp, ta, sh, tm, Pi, lsd, p, tmp2D,
             "ERA5 Hourly", "reanalysis", "10.24381/cds.adbb2d47",
             eroot, eroot
         )
     else
-        return TmPiDefault{FT,ST,DT}(
-            ts, td, sp, ta, sh, tm, Pi, p, tmp2D, tmp3D,
+        return TmPiDefault{ST}(
+            ts, td, sp, ta, sh, tm, Pi, lsd, p, tmp2D, tmp3D,
             "ERA5 Hourly", "reanalysis", "10.24381/cds.adbb2d47",
             eroot, eroot
         )

@@ -23,6 +23,8 @@ using Reexport
 @reexport using Dates
 @reexport using GeoRegions
 
+import Base: download
+
 ## Exporting the following functions:
 export
         create, TmPiDataset

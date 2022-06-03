@@ -13,10 +13,10 @@ using NumericalIntegration
 using Statistics
 
 ## Import relevant functions from ERA5Reanalysis.jl
-using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region, ERA5Hourly
+using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region
 using ERA5Reanalysis: SingleLevel, PressureLevel, SingleVariable, PressureVariable
 using ERA5Reanalysis: LandSea, getLandSea
-using ERA5Reanalysis: isSingle, era5Pressures, download, save
+using ERA5Reanalysis: isSingle, era5Pressures, download, save, e5dfnc
 
 ## Reexporting exported functions within these modules
 using Reexport
@@ -33,7 +33,7 @@ export
 
 Abstract supertype for temporary arrays used to calculate the Tm and Pi datasets.
 """
-abstract type TmPiDataset end
+abstract type TmPiDataset <: ERA5Dataset end
 
 ## CreateTmPiDataset.jl logging preface
 

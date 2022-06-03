@@ -1,23 +1,29 @@
-struct TmPiDefault{FT<:Real} <: TmPiDataset
+struct TmPiDefault{ST<:AbstractString, DT<:TimeType} <: TmPiDataset
 
     ts :: Array{Float32,2}
     td :: Array{Float32,2}
     sp :: Array{Float32,2}
     ta :: Array{Float32,3}
     sh :: Array{Float32,3}
+
+    tm :: Array{Float32,3}
+    Pi :: Array{Float32,3}
+
+    p  :: Vector{Float32}
 
     tmp2D :: Array{Int16,2}
     tmp3D :: Array{Int16,3}
 
-    tm :: Array{Float32,3}
-    Pi :: Array{Float32,3}
-
-    lsd :: LandSea{FT}
-    p   :: Vector{Float32}
+    lname :: ST
+    ptype :: ST
+	sldoi :: ST
+    dates :: DT
+    eroot :: ST
+    emask :: ST
 
 end
 
-struct TmPiPrecise{FT<:Real} <: TmPiDataset
+struct TmPiPrecise{ST<:AbstractString, DT<:TimeType} <: TmPiDataset
 
     ts :: Array{Float32,2}
     td :: Array{Float32,2}
@@ -25,27 +31,36 @@ struct TmPiPrecise{FT<:Real} <: TmPiDataset
     ta :: Array{Float32,3}
     sh :: Array{Float32,3}
 
-    tmp2D :: Array{Int16,2}
-
     tm :: Array{Float32,3}
     Pi :: Array{Float32,3}
 
-    lsd :: LandSea{FT}
-    p   :: Vector{Float32}
+    p  :: Vector{Float32}
+
+    tmp2D :: Array{Int16,2}
+
+    lname :: ST
+    ptype :: ST
+	sldoi :: ST
+    dates :: DT
+    eroot :: ST
+    emask :: ST
 
 end
 
-function TmPiDataset(
-    e5ds :: ERA5Hourly;
+function TmPiPlaceholder(;
+    date :: Date,
+    efol :: AbstractString = homedir(),
     isprecise :: Bool = false,
-    FT = Float32
+    FT = Float32,
+    ST = String,
+    DT = Date
 )
 
     p = era5Pressures(); p = p[p.>=50]; np = length(p)
     p = Float32.(p*100)
 
     @info "$(modulelog()) - Loading Global LandSea dataset (0.25º resolution)"
-    lsd  = getLandSea(e5ds,ERA5Region(GeoRegion("GLB"),gres=0.25))
+    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),gres=0.25),eroot=efol)
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 
@@ -65,16 +80,16 @@ function TmPiDataset(
     Pi = zeros(Float32,nlon,nlat,744) # 31*24 = 744
 
     if isprecise
-        return TmPiPrecise{FT}(
-            ts, td, sp, ta, sh,
-            tmp2D,
-            tm, Pi, lsd, p
+        return TmPiPrecise{FT,ST,DT}(
+            ts, td, sp, ta, sh, tm, Pi, p, tmp2D,
+            "ERA5 Hourly", "reanalysis", "10.24381/cds.adbb2d47",
+            date, efol, efol
         )
     else
-        return TmPiDefault{FT}(
-            ts, td, sp, ta, sh,
-            tmp2D, tmp3D,
-            tm, Pi, lsd, p
+        return TmPiDefault{FT,ST,DT}(
+            ts, td, sp, ta, sh, tm, Pi, p, tmp2D, tmp3D,
+            "ERA5 Hourly", "reanalysis", "10.24381/cds.adbb2d47",
+            date, efol, efol
         )
     end
 

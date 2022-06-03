@@ -1,12 +1,8 @@
 function create(
-    tmpi :: TmPiDataset,
-    e5ds :: ERA5Dataset;
-    dt   :: Date,
+    tmpi :: ERA5Dataset;
     verbose :: Bool = false,
     keepraw :: Bool = false
 )
-
-    e5ds = ERA5Hourly(dtbeg=dt,dtend=dt,eroot=joinpath(e5ds.eroot,".."))
 
     psfc = SingleVariable("sp")
     tsfc = SingleVariable("t2m")
@@ -14,9 +10,9 @@ function create(
     tair = PressureVariable("t",hPa=1)
     shum = PressureVariable("q",hPa=1)
 
-    downloadERA5(e5ds,[psfc,tsfc,tdew])
-    downloadERA5(e5ds,[tair,shum],tmpi)
+    downloadERA5(tmpi,[psfc,tsfc,tdew])
+    downloadERA5(tmpi,[tair,shum])
 
-    calculate(e5ds,tmpi,verbose,keepraw)
+    calculate(tmpi,verbose,keepraw)
 
 end

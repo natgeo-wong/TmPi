@@ -3,13 +3,12 @@ calce2q(e::Float32,p::Float32) = e * 0.6219838793551742 / (p - e * 0.37801612064
 calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 
 function calculate(
-    e5ds :: ERA5Dataset,
-    tmpi :: TmPiDefault{FT},
+    tmpi :: TmPiDefault,
     verbose :: Bool,
     keepraw :: Bool
-) where FT <: Real
+)
     
-    dt = e5ds.dtbeg; ndt = daysinmonth(dt) * 24
+    dt = tmpi.dates; ndt = daysinmonth(dt) * 24
     p = tmpi.p; np = length(p)
     
     @info "$(modulelog()) - Preallocating arrays for numerical integration to calculate Tm"
@@ -20,11 +19,11 @@ function calculate(
     ipv = Float32.(vcat(0,p,0))
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets"
-    sds = NCDataset(joinpath(e5ds.eroot,"tmpnc-single-$dt.nc"))
+    sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$dt.nc"))
     
     @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets"
-    tds = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-t-$dt.nc"))
-    qds = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-q-$dt.nc"))
+    tds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-t-$dt.nc"))
+    qds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-q-$dt.nc"))
     
     @info "$(modulelog()) - Loading LandSea Dataset"
     lsd = tmpi.lsd
@@ -115,14 +114,14 @@ function calculate(
     @info "$(modulelog()) - Saving Tm and Pi data for $dt"
 
     save(
-        view(tmpi.tm,:,:,1:ndt),dt,e5ds,
+        view(tmpi.tm,:,:,1:ndt),dt,tmpi,
         SingleVariable("t_qwm"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
     )
 
     save(
-        view(tmpi.Pi,:,:,1:ndt),dt,e5ds,
+        view(tmpi.Pi,:,:,1:ndt),dt,tmpi,
         SingleVariable("Pi"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
@@ -130,20 +129,19 @@ function calculate(
 
     if !keepraw
         @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
-        rm(joinpath(e5ds.eroot,"tmpnc-single-$dt.nc"),force=true)
-        rm(joinpath(e5ds.eroot,"tmpnc-pressure-t-$dt.nc"),force=true)
-        rm(joinpath(e5ds.eroot,"tmpnc-pressure-q-$dt.nc"),force=true)
+        rm(joinpath(tmpi.eroot,"tmpnc-single-$dt.nc"),force=true)
+        rm(joinpath(tmpi.eroot,"tmpnc-pressure-t-$dt.nc"),force=true)
+        rm(joinpath(tmpi.eroot,"tmpnc-pressure-q-$dt.nc"),force=true)
     end
 end
 
 function calculate(
-    e5ds :: ERA5Dataset,
-    tmpi :: TmPiPrecise{FT},
+    tmpi :: TmPiPrecise,
     verbose :: Bool,
     keepraw :: Bool
-) where FT <: Real
+)
     
-    dt = e5ds.dtbeg; ndt = daysinmonth(dt) * 24
+    dt = tmpi.dates; ndt = daysinmonth(dt) * 24
     p = tmpi.p; np = length(p)
     
     @info "$(modulelog()) - Preallocating arrays for numerical integration to calculate Tm"
@@ -154,12 +152,12 @@ function calculate(
     ipv = Float32.(vcat(0,p,0))
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets"
-    sds = NCDataset(joinpath(e5ds.eroot,"tmpnc-single-$dt.nc"))
+    sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$dt.nc"))
     
     @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets"
     pds = Vector{NCDataset}(undef,np)
     for ip in 1 : np
-        pds[ip] = NCDataset(joinpath(e5ds.eroot,"tmpnc-pressure-$(p[ip])-$dt.nc"))
+        pds[ip] = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-$(p[ip])-$dt.nc"))
     end
     
     @info "$(modulelog()) - Loading LandSea Dataset"
@@ -258,14 +256,14 @@ function calculate(
     @info "$(modulelog()) - Saving Tm and Pi data for $dt"
 
     save(
-        view(tmpi.tm,:,:,1:ndt),dt,e5ds,
+        view(tmpi.tm,:,:,1:ndt),dt,tmpi,
         SingleVariable("t_qwm"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
     )
 
     save(
-        view(tmpi.Pi,:,:,1:ndt),dt,e5ds,
+        view(tmpi.Pi,:,:,1:ndt),dt,tmpi,
         SingleVariable("Pi"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
@@ -273,9 +271,9 @@ function calculate(
 
     if !keepraw
         @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
-        rm(joinpath(e5ds.eroot,"tmpnc-single-$dt.nc"),force=true)
+        rm(joinpath(tmpi.eroot,"tmpnc-single-$dt.nc"),force=true)
         for ip in 1 : np
-           rm(joinpath(e5ds.eroot,"tmpnc-pressure-$(p[ip])-$dt.nc"),force=true)
+           rm(joinpath(tmpi.eroot,"tmpnc-pressure-$(p[ip])-$dt.nc"),force=true)
         end
     end
 

@@ -55,7 +55,7 @@ function download(
             "month"          => month(date),
             "day"            => collect(1:31),
             "variable"       => evarii.lname,
-            "pressure_level" => tmpi.p,
+            "pressure_level" => tmpi.p ./ 100,
             "area"           => [90, 0, -90, 360],
             "grid"           => [0.25, 0.25],
             "time"           => [
@@ -96,7 +96,7 @@ function download(
             "month"          => month(date),
             "day"            => collect(1:31),
             "variable"       => [evarii.lname for evarii in evar],
-            "pressure_level" => ip,
+            "pressure_level" => ip ./ 100,
             "area"           => [90, 0, -90, 360],
             "grid"           => [0.25, 0.25],
             "time"           => [

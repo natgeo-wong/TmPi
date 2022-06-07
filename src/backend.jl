@@ -72,5 +72,5 @@ function nanmean(
         dNaN[iNaN] = !isnan(data[iNaN])
     end
     dataii = @view data[dNaN]
-    if isempty(dataii); return mean(dataii); else; return NaN; end
+    if !isempty(dataii); return mean(dataii); else; return NaN; end
 end

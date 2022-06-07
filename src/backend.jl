@@ -41,3 +41,15 @@ function ncoffsetscale(data::AbstractArray{<:Real})
     return scale,offset
 
 end
+
+function nanmean(
+    data :: AbstractArray,
+    dNaN :: AbstractArray
+)
+    nNaN = length(dNaN)
+    for iNaN in 1 : nNaN
+        dNaN[iNaN] = !isnan(data[iNaN])
+    end
+    dataii = @view data[dNaN]
+    if isempty(dataii); return mean(dataii); else; return NaN; end
+end

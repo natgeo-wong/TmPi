@@ -5,9 +5,20 @@ function e5dfnc(
 )
 
     dts = yr2str(date)
-    fol = joinpath(tmpi.eroot,dts)
+    fol = joinpath(tmpi.eroot,evar.varID,dts)
     fnc = evar.varID * "-" * yrmo2str(date) * ".nc"
     return joinpath(fol,fnc)
+
+end
+
+function e5danc(
+    tmpi :: TmPiDataset,
+	evar :: SingleLevel,
+    date :: TimeType
+)
+
+    fnc = evar.varID * "-" * yr2str(date) * ".nc"
+    return joinpath(tmpi.eroot,evar.varID,fnc)
 
 end
 

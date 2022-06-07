@@ -2,7 +2,8 @@ function analysis(
     tmpi  :: TmPiDataset,
 	evar  :: SingleLevel;
     dtbeg :: TimeType,
-    dtend :: TimeType
+    dtend :: TimeType,
+    verbose :: Bool = false
 )
 
     yrbeg = year(dtbeg)
@@ -13,7 +14,7 @@ function analysis(
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 
-    @info "$(Dates.now()) - Preallocating arrays ..."
+    @info "$(modulelog()) - Preallocating arrays ..."
 
     davg = zeros(Float32,nlon,nlat,25,13)
     dstd = zeros(Float32,nlon,nlat,25,13)
@@ -38,9 +39,12 @@ function analysis(
 
     for yr in yrbeg : yrend
 
-        @info "$(Dates.now()) - Calculating monthly climatology for $yr ..."
+        @info "$(modulelog()) - Calculating monthly climatology for $yr ..."
         for mo in 1 : 12
 
+            if verbose
+                @info "$(modulelog()) - Loading the data for $(evar.varID) during $yr $(monthname(mo)) ..."
+            end
             ndy = daysinmonth(Date(yr,mo))
             ds  = NCDataset(e5dfnc(tmpi,evar,Date(yr,mo)))
             sc  = ds[evar.varID].attrib["scale_factor"]
@@ -50,7 +54,7 @@ function analysis(
             for idy = 1 : ndy, ihr = 1 : 24
                 it = ihr + (idy-1) * 24
                 tvr = view(tvar,:,:,ihr,idy)
-                NCDataset.load!(ds[evar.varID].var,tvr,:,:,it)
+                NCDatasets.load!(ds[evar.varID].var,tvr,:,:,it)
             end
             int2real!(
                 view(rvar,:,:,:,1:ndy), view(tvar,:,:,:,1:ndy),
@@ -58,7 +62,9 @@ function analysis(
             )
             close(ds)
 
-            @debug "$(Dates.now()) - Calculating diurnal statistics for each month ..."
+            if verbose
+                @info "$(modulelog()) - Calculating diurnal statistics for $yr $(monthname(mo)) ..."
+            end
             for ihr = 1 : 24, ilat = 1 : nlat, ilon = 1 : nlon
                 davg[ilon,ilat,ihr,mo] = mean(view(rvar,ilon,ilat,ihr,1:ndy))
                 dstd[ilon,ilat,ihr,mo] = std(view(rvar,ilon,ilat,ihr,1:ndy))
@@ -66,7 +72,9 @@ function analysis(
                 dmin[ilon,ilat,ihr,mo] = minimum(view(rvar,ilon,ilat,ihr,1:ndy))
             end
 
-            @debug "$(Dates.now()) - Calculating monthly climatology for $yr $(monthname(imo)) ..."
+            if verbose
+                @info "$(modulelog()) - Calculating monthly climatology for $yr $(monthname(mo)) ..."
+            end
             for ilat = 1 : nlat, ilon = 1 : nlon
                 davg[ilon,ilat,25,mo] = mean(view(rvar,ilon,ilat,:,1:ndy))
                 dstd[ilon,ilat,25,mo] = std(view(rvar,ilon,ilat,:,1:ndy))
@@ -76,28 +84,28 @@ function analysis(
 
         end
 
-        @info "$(Dates.now()) - Calculating yearly climatology for $yr ..."
+        @info "$(modulelog()) - Calculating yearly climatology for $yr ..."
         for ihr = 1 : 25, ilat = 1 : nlat, ilon = 1 : nlon
-            davg[ilon,ilat,ihr,mo] = mean(view(davg,ilon,ilat,ihr,1:12))
-            dstd[ilon,ilat,ihr,mo] = mean(view(dstd,ilon,ilat,ihr,1:12))
-            dmax[ilon,ilat,ihr,mo] = maximum(view(dmax,ilon,ilat,ihr,1:12))
-            dmin[ilon,ilat,ihr,mo] = minimum(view(dmin,ilon,ilat,ihr,1:12))
+            davg[ilon,ilat,ihr,end] = mean(view(davg,ilon,ilat,ihr,1:12))
+            dstd[ilon,ilat,ihr,end] = mean(view(dstd,ilon,ilat,ihr,1:12))
+            dmax[ilon,ilat,ihr,end] = maximum(view(dmax,ilon,ilat,ihr,1:12))
+            dmin[ilon,ilat,ihr,end] = minimum(view(dmin,ilon,ilat,ihr,1:12))
         end
 
-        @info "$(Dates.now()) - Calculating zonal-averaged climatology for $yr ..."
-        for ilat = 1 : nlat, it = 1 : nt, imo = 1 : 13
-            zavg[ilat,it,imo] = nanmean(view(davg,:,ilat,it,imo),lon_NaN);
-            zstd[ilat,it,imo] = nanmean(view(dstd,:,ilat,it,imo),lon_NaN);
-            zmax[ilat,it,imo] = nanmean(view(dmax,:,ilat,it,imo),lon_NaN);
-            zmin[ilat,it,imo] = nanmean(view(dmin,:,ilat,it,imo),lon_NaN);
+        @info "$(modulelog()) - Calculating zonal-averaged climatology for $yr ..."
+        for ilat = 1 : nlat, ihr = 1 : 25, imo = 1 : 13
+            zavg[ilat,ihr,imo] = nanmean(view(davg,:,ilat,ihr,imo),lon_NaN);
+            zstd[ilat,ihr,imo] = nanmean(view(dstd,:,ilat,ihr,imo),lon_NaN);
+            zmax[ilat,ihr,imo] = nanmean(view(dmax,:,ilat,ihr,imo),lon_NaN);
+            zmin[ilat,ihr,imo] = nanmean(view(dmin,:,ilat,ihr,imo),lon_NaN);
         end
         
-        @info "$(Dates.now()) - Calculating meridional-averaged climatology for $yr ..."
-        for imo = 1 : 13, it = 1 : nt, ilon = 1 : nlon;
-            mavg[ilon,it,imo] = nanmean(view(davg,ilon,:,it,imo),lat_NaN);
-            mstd[ilon,it,imo] = nanmean(view(dstd,ilon,:,it,imo),lat_NaN);
-            mmax[ilon,it,imo] = nanmean(view(dmax,ilon,:,it,imo),lat_NaN);
-            mmin[ilon,it,imo] = nanmean(view(dmin,ilon,:,it,imo),lat_NaN);
+        @info "$(modulelog()) - Calculating meridional-averaged climatology for $yr ..."
+        for imo = 1 : 13, ihr = 1 : 25, ilon = 1 : nlon;
+            mavg[ilon,ihr,imo] = nanmean(view(davg,ilon,:,ihr,imo),lat_NaN);
+            mstd[ilon,ihr,imo] = nanmean(view(dstd,ilon,:,ihr,imo),lat_NaN);
+            mmax[ilon,ihr,imo] = nanmean(view(dmax,ilon,:,ihr,imo),lat_NaN);
+            mmin[ilon,ihr,imo] = nanmean(view(dmin,ilon,:,ihr,imo),lat_NaN);
         end
 
         save(
@@ -138,7 +146,7 @@ function save(
     end
     ds = NCDataset(fnc,"c",attrib = Dict(
         "Conventions" => "CF-1.6",
-        "history"     => "Created on $(Dates.now()) with ERA5Reanalysis.jl",
+        "history"     => "Created on $(modulelog()) with ERA5Reanalysis.jl",
         "comments"    => "ERA5Reanalysis.jl creates NetCDF files in the same format that data is saved on the Climate Data Store"
     ))
     ds.attrib["doi"] = tmpi.sldoi

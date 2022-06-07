@@ -54,7 +54,7 @@ function TmPiDataset(;
     ST = String
 )
 
-    p = era5Pressures(); p = p[p.>=50]; np = length(p)
+    p = era5Pressures(); np = length(p)
     p = Float32.(p*100)
 
     @info "$(modulelog()) - Loading Global LandSea dataset (0.25º resolution)"

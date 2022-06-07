@@ -23,6 +23,27 @@ function int2real!(
 
 end
 
+function real2int16(
+    iarray :: AbstractArray{<:Real},
+    scale  :: Real,
+    offset :: Real
+)
+
+    oarray = zeros(Int16,size(iarray))
+    for ii = 1 : length(iarray)
+
+        idata = (iarray[ii] - offset) / scale
+        if isnan(idata)
+              oarray[ii] = -32767
+        else; oarray[ii] = round(Int16,idata)
+        end
+
+    end
+
+    return oarray
+
+end
+
 function ncoffsetscale(data::AbstractArray{<:Real})
 
     dmax = data[findfirst(!isnan,data)]

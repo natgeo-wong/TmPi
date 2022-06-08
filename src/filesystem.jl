@@ -22,6 +22,18 @@ function e5danc(
 
 end
 
+function e5dcnc(
+    tmpi :: TmPiDataset,
+	evar :: SingleLevel,
+    dtbeg :: TimeType,
+    dtend :: TimeType
+)
+
+    fnc = evar.varID * "-$(yr2str(dtbeg))_$(yr2str(dtend)).nc"
+    return joinpath(tmpi.eroot,evar.varID,fnc)
+
+end
+
 function save(
     data :: AbstractArray{<:Real,3},
     date :: Date,

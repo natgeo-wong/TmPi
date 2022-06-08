@@ -36,6 +36,7 @@ function analysis(
 
     tvar = zeros(Int16,nlon,nlat,24,31)
     rvar = zeros(Float32,nlon,nlat,24,31)
+    dvar = zeros(Float32,nlon,nlat,31)
 
     for yr in yrbeg : yrend
 
@@ -63,7 +64,14 @@ function analysis(
             close(ds)
 
             if verbose
-                @info "$(modulelog()) - Calculating diurnal statistics for $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Calculating daily means for $(e5ds.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) during $yr $(monthname(mo)) ..."
+            end
+            for idy = 1 : ndy, ilat = 1 : nlat, ilon = 1 : nlon
+                dvar[ilon,ilat,idy] = mean(view(rvar,ilon,ilat,:,idy))
+            end
+
+            if verbose
+                @info "$(modulelog()) - Calculating diurnal statistics for $(e5ds.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) during $yr $(monthname(mo)) ..."
             end
             for ihr = 1 : 24, ilat = 1 : nlat, ilon = 1 : nlon
                 davg[ilon,ilat,ihr,mo] = mean(view(rvar,ilon,ilat,ihr,1:ndy))
@@ -73,13 +81,13 @@ function analysis(
             end
 
             if verbose
-                @info "$(modulelog()) - Calculating monthly climatology for $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Calculating monthly climatology for $(e5ds.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) during $yr $(monthname(mo)) ..."
             end
             for ilat = 1 : nlat, ilon = 1 : nlon
-                davg[ilon,ilat,25,mo] = mean(view(rvar,ilon,ilat,:,1:ndy))
-                dstd[ilon,ilat,25,mo] = std(view(rvar,ilon,ilat,:,1:ndy))
-                dmax[ilon,ilat,25,mo] = maximum(view(rvar,ilon,ilat,:,1:ndy))
-                dmin[ilon,ilat,25,mo] = minimum(view(rvar,ilon,ilat,:,1:ndy))
+                davg[ilon,ilat,25,mo] = mean(view(dvar,ilon,ilat,1:ndy))
+                dstd[ilon,ilat,25,mo] = std(view(dvar,ilon,ilat,1:ndy))
+                dmax[ilon,ilat,25,mo] = maximum(view(dvar,ilon,ilat,1:ndy))
+                dmin[ilon,ilat,25,mo] = minimum(view(dvar,ilon,ilat,1:ndy))
             end
 
         end
@@ -539,6 +547,6 @@ function save(
 
     close(ds)
 
-    @info "$(modulelog()) - Analyzed $(uppercase(tmpi.lname)) $(evar.vname) in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) has been saved into $(fnc)."
+    @info "$(modulelog()) - Analyzed $(uppercase(tmpi.lname)) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) has been saved into $(fnc)."
 
 end

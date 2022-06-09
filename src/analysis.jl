@@ -14,7 +14,7 @@ function analysis(
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 
-    @info "$(modulelog()) - Preallocating arrays ..."
+    @info "$(modulelog()) - Preallocating data arrays for the analysis of data in the Global (0.25º Resolution) Region ..."
 
     davg = zeros(Float32,nlon,nlat,25,13)
     dstd = zeros(Float32,nlon,nlat,25,13)
@@ -40,11 +40,11 @@ function analysis(
 
     for yr in yrbeg : yrend
 
-        @info "$(modulelog()) - Calculating monthly climatology for $yr ..."
+        @info "$(modulelog()) - Calculating monthly climatology and diurnal statistics for $(tmpi.lname) $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
         for mo in 1 : 12
 
             if verbose
-                @info "$(modulelog()) - Loading the data for $(evar.varID) during $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Loading $(tmpi.lname) $(evar.vname) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
             end
             ndy = daysinmonth(Date(yr,mo))
             ds  = NCDataset(e5dfnc(tmpi,evar,Date(yr,mo)))
@@ -64,14 +64,14 @@ function analysis(
             close(ds)
 
             if verbose
-                @info "$(modulelog()) - Calculating daily means for $(e5ds.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) during $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Calculating daily means for $(tmpi.lname) $(evar.vname) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
             end
             for idy = 1 : ndy, ilat = 1 : nlat, ilon = 1 : nlon
                 dvar[ilon,ilat,idy] = mean(view(rvar,ilon,ilat,:,idy))
             end
 
             if verbose
-                @info "$(modulelog()) - Calculating diurnal statistics for $(e5ds.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) during $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Calculating diurnal statistics for $(tmpi.lname) $(evar.vname) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
             end
             for ihr = 1 : 24, ilat = 1 : nlat, ilon = 1 : nlon
                 davg[ilon,ilat,ihr,mo] = mean(view(rvar,ilon,ilat,ihr,1:ndy))
@@ -81,7 +81,7 @@ function analysis(
             end
 
             if verbose
-                @info "$(modulelog()) - Calculating monthly climatology for $(e5ds.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) during $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Calculating monthly climatology for $(tmpi.lname) $(evar.vname) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
             end
             for ilat = 1 : nlat, ilon = 1 : nlon
                 davg[ilon,ilat,25,mo] = mean(view(dvar,ilon,ilat,1:ndy))
@@ -92,7 +92,7 @@ function analysis(
 
         end
 
-        @info "$(modulelog()) - Calculating yearly climatology for $yr ..."
+        @info "$(modulelog()) - Calculating yearly climatology for $(tmpi.lname) $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
         for ihr = 1 : 25, ilat = 1 : nlat, ilon = 1 : nlon
             davg[ilon,ilat,ihr,end] = mean(view(davg,ilon,ilat,ihr,1:12))
             dstd[ilon,ilat,ihr,end] = mean(view(dstd,ilon,ilat,ihr,1:12))
@@ -100,7 +100,7 @@ function analysis(
             dmin[ilon,ilat,ihr,end] = minimum(view(dmin,ilon,ilat,ihr,1:12))
         end
 
-        @info "$(modulelog()) - Calculating zonal-averaged climatology for $yr ..."
+        @info "$(modulelog()) - Calculating zonal-averaged climatology for $(tmpi.lname) $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
         for ilat = 1 : nlat, ihr = 1 : 25, imo = 1 : 13
             zavg[ilat,ihr,imo] = nanmean(view(davg,:,ilat,ihr,imo),lon_NaN);
             zstd[ilat,ihr,imo] = nanmean(view(dstd,:,ilat,ihr,imo),lon_NaN);
@@ -108,7 +108,7 @@ function analysis(
             zmin[ilat,ihr,imo] = nanmean(view(dmin,:,ilat,ihr,imo),lon_NaN);
         end
         
-        @info "$(modulelog()) - Calculating meridional-averaged climatology for $yr ..."
+        @info "$(modulelog()) - Calculating meridional-averaged climatology for $(tmpi.lname) $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
         for imo = 1 : 13, ihr = 1 : 25, ilon = 1 : nlon;
             mavg[ilon,ihr,imo] = nanmean(view(davg,ilon,:,ihr,imo),lat_NaN);
             mstd[ilon,ihr,imo] = nanmean(view(dstd,ilon,:,ihr,imo),lat_NaN);

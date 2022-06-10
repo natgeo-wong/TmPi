@@ -1,4 +1,20 @@
 calcTd2e(Td::Float32) = 611.657 * exp((2.5e6/461.5181) * (1/273.16 - 1/Td))
+
+function calcTd2ef(Td::Float32)
+
+    if Td >= 273.16
+    	return Float32(611.21 * exp(17.502 * (Td-273.16) / (Td-32.19)))
+    elseif Td <= 250.16
+    	return Float32(611.21 * exp(22.587 * (Td-273.16) / (Td+0.7)))
+    else
+        α  = ((Td - 250.16) / (273.16 - 250.16))^2
+        ei = 611.21 * exp(22.587 * (Td-273.16) / (Td+0.7))
+        ew = 611.21 * exp(17.502 * (Td-273.16) / (Td-32.19))
+        return Float32(α * ew + (1-α) * ei)
+    end
+
+end
+
 calce2q(e::Float32,p::Float32) = e * 0.6219838793551742 / (p - e * 0.3780161206448258)
 calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 
@@ -87,7 +103,7 @@ function calculate(
             end
 
             ita[end] = its
-            ish[end] = Float32(calce2q(Float32(calcTd2e(itd)),isp))
+            ish[end] = Float32(calce2q(Float32(calcTd2ef(itd)),isp))
             ipv[end] = isp
 
             for ip = 2 : (np+2)

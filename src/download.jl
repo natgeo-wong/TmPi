@@ -8,7 +8,7 @@ function download(
 
     @info "$(modulelog()) - Using CDSAPI in Julia to download SINGLE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
 
-    fnc = joinpath(tmpi.eroot,"tmpnc-single-$(date).nc")
+    fnc = joinpath(tmpi.path,"tmpnc-single-$(date).nc")
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
 
     e5dkey = Dict(
@@ -46,7 +46,7 @@ function download(
 
     for evarii in evar
 
-        fnc = joinpath(tmpi.eroot,"tmpnc-pressure-$(evarii.varID)-$(date).nc")
+        fnc = joinpath(tmpi.path,"tmpnc-pressure-$(evarii.varID)-$(date).nc")
         fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
 
         e5dkey = Dict(
@@ -87,7 +87,7 @@ function download(
 
     for ip in tmpi.p
 
-        fnc = joinpath(tmpi.eroot,"tmpnc-pressure-$ip-$(date).nc")
+        fnc = joinpath(tmpi.path,"tmpnc-pressure-$ip-$(date).nc")
         fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
 
         e5dkey = Dict(

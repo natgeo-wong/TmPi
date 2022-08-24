@@ -18,7 +18,7 @@ struct TmPiDefault{ST<:AbstractString} <: TmPiDataset
     lname :: ST
     ptype :: ST
 	sldoi :: ST
-    eroot :: ST
+    path  :: ST
     emask :: ST
 
 end
@@ -42,15 +42,14 @@ struct TmPiPrecise{ST<:AbstractString} <: TmPiDataset
     lname :: ST
     ptype :: ST
 	sldoi :: ST
-    eroot :: ST
+    path  :: ST
     emask :: ST
 
 end
 
 function TmPiDataset(;
-    eroot :: AbstractString = homedir(),
+    path  :: AbstractString = homedir(),
     isprecise :: Bool = false,
-    FT = Float32,
     ST = String
 )
 
@@ -58,7 +57,7 @@ function TmPiDataset(;
     p = Float32.(p*100)
 
     @info "$(modulelog()) - Loading Global LandSea dataset (0.25º resolution)"
-    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),gres=0.25),eroot=eroot)
+    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),gres=0.25),path=path)
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 
@@ -81,13 +80,13 @@ function TmPiDataset(;
         return TmPiPrecise{ST}(
             ts, td, sp, ta, sh, tm, Pi, lsd, p, tmp2D,
             "ERA5 Hourly", "reanalysis", "10.24381/cds.adbb2d47",
-            eroot, eroot
+            path, path
         )
     else
         return TmPiDefault{ST}(
             ts, td, sp, ta, sh, tm, Pi, lsd, p, tmp2D, tmp3D,
             "ERA5 Hourly", "reanalysis", "10.24381/cds.adbb2d47",
-            eroot, eroot
+            path, path
         )
     end
 

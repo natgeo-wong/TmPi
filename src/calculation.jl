@@ -36,11 +36,11 @@ function calculate(
     ipv = Float32.(vcat(0,p,0))
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets in $(year(date)) $(monthname(date))"
-    sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"))
+    sds = NCDataset(joinpath(tmpi.path,"tmpnc-single-$date.nc"))
     
     @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets in $(year(date)) $(monthname(date))"
-    tds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-t-$date.nc"))
-    qds = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-q-$date.nc"))
+    tds = NCDataset(joinpath(tmpi.path,"tmpnc-pressure-t-$date.nc"))
+    qds = NCDataset(joinpath(tmpi.path,"tmpnc-pressure-q-$date.nc"))
     
     @info "$(modulelog()) - Loading the Global (0.25º Resolution) LandSea Dataset"
     lsd = tmpi.lsd
@@ -148,9 +148,9 @@ function calculate(
 
     if !keepraw
         @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
-        rm(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"),force=true)
-        rm(joinpath(tmpi.eroot,"tmpnc-pressure-t-$date.nc"),force=true)
-        rm(joinpath(tmpi.eroot,"tmpnc-pressure-q-$date.nc"),force=true)
+        rm(joinpath(tmpi.path,"tmpnc-single-$date.nc"),force=true)
+        rm(joinpath(tmpi.path,"tmpnc-pressure-t-$date.nc"),force=true)
+        rm(joinpath(tmpi.path,"tmpnc-pressure-q-$date.nc"),force=true)
     end
 end
 
@@ -172,12 +172,12 @@ function calculate(
     ipv = Float32.(vcat(0,p,0))
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets in $(year(date)) $(monthname(date))"
-    sds = NCDataset(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"))
+    sds = NCDataset(joinpath(tmpi.path,"tmpnc-single-$date.nc"))
     
     @info "$(modulelog()) - Opening NetCDF files for Pressure Level datasets in $(year(date)) $(monthname(date))"
     pds = Vector{NCDataset}(undef,np)
     for ip in 1 : np
-        pds[ip] = NCDataset(joinpath(tmpi.eroot,"tmpnc-pressure-$(p[ip])-$date.nc"))
+        pds[ip] = NCDataset(joinpath(tmpi.path,"tmpnc-pressure-$(p[ip])-$date.nc"))
     end
     
     @info "$(modulelog()) - Loading the Global (0.25º Resolution) LandSea Dataset"
@@ -293,9 +293,9 @@ function calculate(
 
     if !keepraw
         @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
-        rm(joinpath(tmpi.eroot,"tmpnc-single-$date.nc"),force=true)
+        rm(joinpath(tmpi.path,"tmpnc-single-$date.nc"),force=true)
         for ip in 1 : np
-           rm(joinpath(tmpi.eroot,"tmpnc-pressure-$(p[ip])-$date.nc"),force=true)
+           rm(joinpath(tmpi.path,"tmpnc-pressure-$(p[ip])-$date.nc"),force=true)
         end
     end
 

@@ -10,11 +10,11 @@ function int2real!(
     mvalue :: Int16
 ) where FT <: Real
 
-    for ii = 1 : length(iarray)
+    for ii in eachindex(iarray)
 
         if (iarray[ii] == fvalue) || (iarray[ii] == mvalue)
               oarray[ii] = FT(NaN)
-        else; oarray[ii] = iarray[ii] * scale + offset
+        else; oarray[ii] = FT(iarray[ii] * scale + offset)
         end
 
     end
@@ -30,7 +30,7 @@ function real2int16(
 )
 
     oarray = zeros(Int16,size(iarray))
-    for ii = 1 : length(iarray)
+    for ii in eachindex(iarray)
 
         idata = (iarray[ii] - offset) / scale
         if isnan(idata)
@@ -48,7 +48,7 @@ function ncoffsetscale(data::AbstractArray{<:Real})
 
     dmax = data[findfirst(!isnan,data)]
     dmin = data[findfirst(!isnan,data)]
-    for ii = 1 : length(data)
+    for ii in eachindex(iarray)
         dataii = data[ii]
         if !isnan(dataii)
             if dataii > dmax; dmax = dataii end

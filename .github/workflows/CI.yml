@@ -54,6 +54,6 @@ jobs:
       - run: |
           julia --project=docs -e '
             using Documenter: DocMeta, doctest
-            using CreateTmPiDataset
-            DocMeta.setdocmeta!(CreateTmPiDataset, :DocTestSetup, :(using CreateTmPiDataset); recursive=true)
-            doctest(CreateTmPiDataset)'
+            using TmPi
+            DocMeta.setdocmeta!(TmPi, :DocTestSetup, :(using TmPi); recursive=true)
+            doctest(TmPi)'

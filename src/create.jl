@@ -1,8 +1,10 @@
-function create(
-    tmpi :: ERA5Dataset;
-    date :: Date,
+function create(;
+    start :: Date,
+    stop  :: Date,
+    path  :: AbstractString,
     verbose :: Bool = false,
-    keepraw :: Bool = false
+    keepraw :: Bool = false,
+    precise :: Bool = true
 )
 
     psfc = SingleVariable("sp")
@@ -11,9 +13,12 @@ function create(
     tair = PressureVariable("t",hPa=1)
     shum = PressureVariable("q",hPa=1)
 
-    download(tmpi,date,[psfc,tsfc,tdew])
-    download(tmpi,date,[tair,shum])
+    tmpi = TmPiDataset(path=path,isprecise=precise)
 
-    calculate(tmpi,date,verbose,keepraw)
+    for date in start : Month(1) : stop
+        download(tmpi,date,[psfc,tsfc,tdew])
+        download(tmpi,date,[tair,shum])
+        calculate(tmpi,date,verbose,keepraw)
+    end
 
 end

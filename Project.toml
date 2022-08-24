@@ -1,4 +1,4 @@
-name = "CreateTmPiDataset"
+name = "TmPi"
 uuid = "49a64f13-ced2-4d2c-a6b2-5b9e17ba5cf7"
 keywords = ["meteorology", "climate", "water vapor", "gps"]
 desc = "Download and calculate water-vapor-weighted mean temperature from ERA5"
@@ -20,14 +20,14 @@ Reexport = "189a3867-3050-52da-a836-e630ba90ab69"
 Statistics = "10745b16-79ce-11e8-11f9-7d13ad32a3b2"
 
 [compat]
-ERA5Reanalysis = "^0.1"
-GeoRegions = "^2.1"
-HTTP = "0.9"
+ERA5Reanalysis = "^0.2"
+GeoRegions = "4"
+HTTP = "1"
 JSON = "0.21"
-NCDatasets = "0.11"
+NCDatasets = "0.11, ^0.12.7"
 NumericalIntegration = "0.3"
 Reexport = "1"
-julia = "^1.6"
+julia = "^1.8"
 
 [extras]
 Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"

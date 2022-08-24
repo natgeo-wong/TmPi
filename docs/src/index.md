@@ -1,14 +1,14 @@
 ```@meta
-CurrentModule = CreateTmPiDataset
+CurrentModule = TmPi
 ```
 
-# CreateTmPiDataset
+# TmPi
 
-Documentation for [CreateTmPiDataset](https://github.com/natgeo-wong/CreateTmPiDataset.jl).
+Documentation for [TmPi](https://github.com/natgeo-wong/TmPi.jl).
 
 ```@index
 ```
 
 ```@autodocs
-Modules = [CreateTmPiDataset]
+Modules = [TmPi]
 ```

@@ -5,7 +5,7 @@ function e5dfnc(
 )
 
     dts = yr2str(date)
-    fol = joinpath(tmpi.eroot,evar.varID,dts)
+    fol = joinpath(tmpi.path,evar.varID,dts)
     fnc = evar.varID * "-" * yrmo2str(date) * ".nc"
     return joinpath(fol,fnc)
 
@@ -18,7 +18,7 @@ function e5danc(
 )
 
     fnc = evar.varID * "-" * yr2str(date) * ".nc"
-    return joinpath(tmpi.eroot,evar.varID,fnc)
+    return joinpath(tmpi.path,evar.varID,fnc)
 
 end
 
@@ -30,7 +30,7 @@ function e5dcnc(
 )
 
     fnc = evar.varID * "-$(yr2str(dtbeg))_$(yr2str(dtend)).nc"
-    return joinpath(tmpi.eroot,evar.varID,fnc)
+    return joinpath(tmpi.path,evar.varID,fnc)
 
 end
 

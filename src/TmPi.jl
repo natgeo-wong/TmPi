@@ -1,4 +1,4 @@
-module CreateTmPiDataset
+module TmPi
 
 ## Base Modules Used
 using Base64
@@ -37,9 +37,9 @@ Abstract supertype for temporary arrays used to calculate the Tm and Pi datasets
 """
 abstract type TmPiDataset <: ERA5Dataset end
 
-## CreateTmPiDataset.jl logging preface
+## TmPi.jl logging preface
 
-modulelog() = "$(now()) - CreateTmPiDataset.jl"
+modulelog() = "$(now()) - TmPi.jl"
 
 ## Creating Tm and Pi Single-Level variables
 

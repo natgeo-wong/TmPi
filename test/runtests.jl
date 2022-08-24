@@ -1,6 +1,6 @@
-using CreateTmPiDataset
+using TmPi
 using Test
 
-@testset "CreateTmPiDataset.jl" begin
+@testset "TmPi.jl" begin
     # Write your tests here.
 end

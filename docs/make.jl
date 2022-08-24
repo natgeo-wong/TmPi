@@ -1,16 +1,16 @@
-using CreateTmPiDataset
+using TmPi
 using Documenter
 
-DocMeta.setdocmeta!(CreateTmPiDataset, :DocTestSetup, :(using CreateTmPiDataset); recursive=true)
+DocMeta.setdocmeta!(TmPi, :DocTestSetup, :(using TmPi); recursive=true)
 
 makedocs(;
-    modules=[CreateTmPiDataset],
+    modules=[TmPi],
     authors="Nathanael Wong <natgeo.wong@outlook.com>",
-    repo="https://github.com/natgeo-wong/CreateTmPiDataset.jl/blob/{commit}{path}#{line}",
-    sitename="CreateTmPiDataset.jl",
+    repo="https://github.com/natgeo-wong/TmPi.jl/blob/{commit}{path}#{line}",
+    sitename="TmPi.jl",
     format=Documenter.HTML(;
         prettyurls=get(ENV, "CI", "false") == "true",
-        canonical="https://natgeo-wong.github.io/CreateTmPiDataset.jl",
+        canonical="https://natgeo-wong.github.io/TmPi.jl",
         assets=String[],
     ),
     pages=[
@@ -19,6 +19,6 @@ makedocs(;
 )
 
 deploydocs(;
-    repo="github.com/natgeo-wong/CreateTmPiDataset.jl",
+    repo="github.com/natgeo-wong/TmPi.jl",
     devbranch="main",
 )

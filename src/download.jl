@@ -28,8 +28,20 @@ function download(
         "format"       => "netcdf",
     )
     
-    if !isfile(fnc)
-        retrieve("reanalysis-era5-single-levels",e5dkey,fnc,ckeys)
+    if !isfile(fnc) || overwrite
+        tryretrieve = 0
+        while isinteger(tryretrieve) && (tryretrieve < 20)
+            try
+                retrieve("reanalysis-era5-single-levels",e5dkey,fnc,ckeys)
+                tryretrieve += 0.5
+            catch
+                tryretrieve += 1
+                @info "$(modulelog()) - Failed to retrieve/request data from CDSAPI on Attempt $(tryretrieve) of 20"
+            end
+        end
+        if tryretrieve == 20
+            @warn "$(modulelog()) - Failed to retrieve/request data, skipping to next set of requests"
+        end
     end
 
 end
@@ -67,8 +79,20 @@ function download(
             "format"         => "netcdf",
         )
         
-        if !isfile(fnc)
-            retrieve("reanalysis-era5-pressure-levels",e5dkey,fnc,ckeys)
+        if !isfile(fnc) || overwrite
+            tryretrieve = 0
+            while isinteger(tryretrieve) && (tryretrieve < 20)
+                try
+                    retrieve("reanalysis-era5-pressure-levels",e5dkey,fnc,ckeys)
+                    tryretrieve += 0.5
+                catch
+                    tryretrieve += 1
+                    @info "$(modulelog()) - Failed to retrieve/request data from CDSAPI on Attempt $(tryretrieve) of 20"
+                end
+            end
+            if tryretrieve == 20
+                @warn "$(modulelog()) - Failed to retrieve/request data, skipping to next set of requests"
+            end
         end
 
     end
@@ -108,8 +132,20 @@ function download(
             "format"         => "netcdf",
         )
 
-        if !isfile(fnc)
-            retrieve("reanalysis-era5-pressure-levels",e5dkey,fnc,ckeys)
+        if !isfile(fnc) || overwrite
+            tryretrieve = 0
+            while isinteger(tryretrieve) && (tryretrieve < 20)
+                try
+                    retrieve("reanalysis-era5-pressure-levels",e5dkey,fnc,ckeys)
+                    tryretrieve += 0.5
+                catch
+                    tryretrieve += 1
+                    @info "$(modulelog()) - Failed to retrieve/request data from CDSAPI on Attempt $(tryretrieve) of 20"
+                end
+            end
+            if tryretrieve == 20
+                @warn "$(modulelog()) - Failed to retrieve/request data, skipping to next set of requests"
+            end
         end
 
     end

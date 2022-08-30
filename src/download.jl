@@ -28,7 +28,7 @@ function download(
         "format"       => "netcdf",
     )
     
-    if !isfile(fnc) || overwrite
+    if !isfile(fnc)
         tryretrieve = 0
         while isinteger(tryretrieve) && (tryretrieve < 20)
             try
@@ -79,7 +79,7 @@ function download(
             "format"         => "netcdf",
         )
         
-        if !isfile(fnc) || overwrite
+        if !isfile(fnc)
             tryretrieve = 0
             while isinteger(tryretrieve) && (tryretrieve < 20)
                 try
@@ -132,7 +132,7 @@ function download(
             "format"         => "netcdf",
         )
 
-        if !isfile(fnc) || overwrite
+        if !isfile(fnc)
             tryretrieve = 0
             while isinteger(tryretrieve) && (tryretrieve < 20)
                 try

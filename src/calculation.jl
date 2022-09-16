@@ -16,7 +16,7 @@ function calcTd2ef(Td::Float32)
 end
 
 #calce2q(e::Float32,p::Float32) = e * 0.6219838793551742 / (p + e * 0.6219838793551742)
-calce2q(e::Float32,p::Float32) = e * 0.621981 / (p + e * 0.621981) # ε is taken from IFS ERA5 documentation
+calce2q(e::Float32,p::Float32) = e * 0.621981 / (p - 0.378019 * e) # ε is taken from IFS ERA5 documentation
 calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 
 function calculate(

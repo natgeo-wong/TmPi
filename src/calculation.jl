@@ -1,23 +1,23 @@
-calcTd2e(Td::Float32) = 611.657 * exp((2.5e6/461.5181) * (1/273.16 - 1/Td))
+calcTd2e(Td::Float64) = 611.657 * exp((2.5e6/461.5181) * (1/273.16 - 1/Td))
 
-function calcTd2ef(Td::Float32)
+function calcTd2ef(Td::Float64)
 
     if Td >= 273.16
-    	return Float32(611.21 * exp(17.502 * (Td-273.16) / (Td-32.19)))
+    	return 611.21 * exp(17.502 * (Td-273.16) / (Td-32.19))
     elseif Td <= 250.16
-    	return Float32(611.21 * exp(22.587 * (Td-273.16) / (Td+0.7)))
+    	return 611.21 * exp(22.587 * (Td-273.16) / (Td+0.7))
     else
         α  = ((Td - 250.16) / (273.16 - 250.16))^2
         ei = 611.21 * exp(22.587 * (Td-273.16) / (Td+0.7))
         ew = 611.21 * exp(17.502 * (Td-273.16) / (Td-32.19))
-        return Float32(α * ew + (1-α) * ei)
+        return α * ew + (1-α) * ei
     end
 
 end
 
-#calce2q(e::Float32,p::Float32) = e * 0.6219838793551742 / (p + e * 0.6219838793551742)
-calce2q(e::Float32,p::Float32) = e * 0.621981 / (p - 0.378019 * e) # ε is taken from IFS ERA5 documentation
-calcTm2Pi(Tm::Real) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
+#calce2q(e::Float64,p::Float64) = e * 0.6219838793551742 / (p + e * 0.6219838793551742)
+calce2q(e::Float64,p::Float64) = e * 0.621981 / (p - 0.378019 * e) # ε is taken from IFS ERA5 documentation
+calcTm2Pi(Tm::Float64) = 10^6 / ((3.739e3 / Tm + 0.221) * 461.5181) / 1000
 
 function calculate(
     tmpi :: TmPiDefault,
@@ -31,10 +31,10 @@ function calculate(
     
     @info "$(modulelog()) - Preallocating arrays for numerical integration to calculate Tm"
     ind = zeros(Bool,np+2)
-    bot = zeros(Float32,np+2)
-    ita = zeros(Float32,np+2)
-    ish = zeros(Float32,np+2)
-    ipv = Float32.(vcat(0,p,0))
+    bot = zeros(Float64,np+2)
+    ita = zeros(Float64,np+2)
+    ish = zeros(Float64,np+2)
+    ipv = Float64.(vcat(0,p,0))
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets in $(year(date)) $(monthname(date))"
     sds = NCDataset(joinpath(tmpi.path,"tmpnc-single-$date.nc"))
@@ -104,7 +104,7 @@ function calculate(
             end
 
             ita[end] = its
-            ish[end] = Float32(calce2q(Float32(calcTd2ef(itd)),isp))
+            ish[end] = calce2q(calcTd2ef(itd),isp)
             ipv[end] = isp
 
             for ip = 2 : (np+2)
@@ -167,10 +167,10 @@ function calculate(
     
     @info "$(modulelog()) - Preallocating arrays for numerical integration to calculate Tm"
     ind = zeros(Bool,np+2)
-    bot = zeros(Float32,np+2)
-    ita = zeros(Float32,np+2)
-    ish = zeros(Float32,np+2)
-    ipv = Float32.(vcat(0,p,0))
+    bot = zeros(Float64,np+2)
+    ita = zeros(Float64,np+2)
+    ish = zeros(Float64,np+2)
+    ipv = Float64.(vcat(0,p,0))
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets in $(year(date)) $(monthname(date))"
     sds = NCDataset(joinpath(tmpi.path,"tmpnc-single-$date.nc"))
@@ -248,7 +248,7 @@ function calculate(
             end
 
             ita[end] = its
-            ish[end] = Float32(calce2q(Float32(calcTd2e(itd)),isp))
+            ish[end] = calce2q(calcTd2e(itd),isp)
             ipv[end] = isp
 
             for ip = 2 : (np+2)

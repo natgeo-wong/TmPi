@@ -1,16 +1,16 @@
 struct TmPiDefault{ST<:AbstractString} <: TmPiDataset
 
-    ts :: Array{Float32,2}
-    td :: Array{Float32,2}
-    sp :: Array{Float32,2}
-    ta :: Array{Float32,3}
-    sh :: Array{Float32,3}
+    ts :: Array{Float64,2}
+    td :: Array{Float64,2}
+    sp :: Array{Float64,2}
+    ta :: Array{Float64,3}
+    sh :: Array{Float64,3}
 
-    tm :: Array{Float32,3}
-    Pi :: Array{Float32,3}
+    tm :: Array{Float64,3}
+    Pi :: Array{Float64,3}
 
     lsd :: LandSea
-    p   :: Vector{Float32}
+    p   :: Vector{Float64}
 
     tmp2D :: Array{Int16,2}
     tmp3D :: Array{Int16,3}
@@ -25,17 +25,17 @@ end
 
 struct TmPiPrecise{ST<:AbstractString} <: TmPiDataset
 
-    ts :: Array{Float32,2}
-    td :: Array{Float32,2}
-    sp :: Array{Float32,2}
-    ta :: Array{Float32,3}
-    sh :: Array{Float32,3}
+    ts :: Array{Float64,2}
+    td :: Array{Float64,2}
+    sp :: Array{Float64,2}
+    ta :: Array{Float64,3}
+    sh :: Array{Float64,3}
 
-    tm :: Array{Float32,3}
-    Pi :: Array{Float32,3}
+    tm :: Array{Float64,3}
+    Pi :: Array{Float64,3}
 
     lsd :: LandSea
-    p  :: Vector{Float32}
+    p  :: Vector{Float64}
 
     tmp2D :: Array{Int16,2}
 
@@ -54,7 +54,7 @@ function TmPiDataset(;
 )
 
     p = era5Pressures(); np = length(p)
-    p = Float32.(p*100)
+    p = Float64.(p*100)
 
     @info "$(modulelog()) - Loading Global LandSea dataset (0.25º resolution)"
     lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),gres=0.25),path=path)
@@ -62,19 +62,19 @@ function TmPiDataset(;
     nlat = length(lsd.lat)
 
     @info "$(modulelog()) - Preallocating arrays for downloaded ERA5 datasets"
-    ts = zeros(Float32,nlon,nlat)
-    td = zeros(Float32,nlon,nlat)
-    sp = zeros(Float32,nlon,nlat)
-    ta = zeros(Float32,nlon,nlat,np)
-    sh = zeros(Float32,nlon,nlat,np)
+    ts = zeros(Float64,nlon,nlat)
+    td = zeros(Float64,nlon,nlat)
+    sp = zeros(Float64,nlon,nlat)
+    ta = zeros(Float64,nlon,nlat,np)
+    sh = zeros(Float64,nlon,nlat,np)
 
     @info "$(modulelog()) - Preallocating temporary arrays to load raw data from NetCDF"
     tmp2D = zeros(Int16,nlon,nlat)
     tmp3D = zeros(Int16,nlon,nlat,np)
 
     @info "$(modulelog()) - Preallocating arrays for final Tm and Pi data"
-    tm = zeros(Float32,nlon,nlat,744) # 31*24 = 744
-    Pi = zeros(Float32,nlon,nlat,744) # 31*24 = 744
+    tm = zeros(Float64,nlon,nlat,744) # 31*24 = 744
+    Pi = zeros(Float64,nlon,nlat,744) # 31*24 = 744
 
     if isprecise
         return TmPiPrecise{ST}(

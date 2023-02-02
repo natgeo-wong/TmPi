@@ -53,8 +53,8 @@ function save(
     end
     ds = NCDataset(fnc,"c",attrib = Dict(
         "Conventions" => "CF-1.6",
-        "history"     => "Created on $(Dates.now()) with ERA5Reanalysis.jl",
-        "comments"    => "ERA5Reanalysis.jl creates NetCDF files in the same format that data is saved on the Climate Data Store"
+        "history"     => "Created on $(Dates.now()) with TmPi.jl",
+        "comments"    => "TmPi.jl creates NetCDF files in the same format that data is saved on the Climate Data Store"
     ))
     ds.attrib["doi"] = tmpi.sldoi
 
@@ -81,24 +81,25 @@ function save(
         "calendar"  => "gregorian",
     ))
 
-    ncvar = defVar(ds,evar.varID,Int16,("longitude","latitude","time"),attrib = Dict(
+    ncvar = defVar(ds,evar.varID,Float64,("longitude","latitude","time"),attrib = Dict(
         "long_name"     => evar.lname,
         "full_name"     => evar.vname,
         "units"         => evar.units,
-        "scale_factor"  => scale,
-        "add_offset"    => offset,
-        "_FillValue"    => Int16(-32767),
-        "missing_value" => Int16(-32767),
+        # "scale_factor"  => scale,
+        # "add_offset"    => offset,
+        # "_FillValue"    => Int16(-32767),
+        # "missing_value" => Int16(-32767),
     ))
 
     nclon[:]  = lsd.lon
     nclat[:]  = lsd.lat
     nctime[:] = collect(1:nhr) .- 1
+    ncvar[:]  = data
 
-    if iszero(sum(isnan.(data)))
-          ncvar[:] = data
-    else; ncvar.var[:] = real2int16(data,scale,offset)
-    end
+    # if iszero(sum(isnan.(data)))
+    #       ncvar[:] = data
+    # else; ncvar.var[:] = real2int16(data,scale,offset)
+    # end
 
     close(ds)
 

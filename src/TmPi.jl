@@ -47,7 +47,7 @@ function __init__()
     
     if !isSingle("t_qwm",throw=false)
         SingleVariable(
-            varID = "t_qwm",
+            varID = "Tm",
             lname = "water_vapour_weighted_mean_temperature",
             vname = "Water Vapour Weighted Mean Temperature",
             units = "K",

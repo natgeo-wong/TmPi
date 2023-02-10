@@ -45,7 +45,7 @@ modulelog() = "$(now()) - TmPi.jl"
 
 function __init__()
     
-    if !isSingle("t_qwm",throw=false)
+    if !isSingle("Tm",throw=false)
         SingleVariable(
             varID = "Tm",
             lname = "water_vapour_weighted_mean_temperature",

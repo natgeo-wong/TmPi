@@ -135,7 +135,7 @@ function calculate(
 
     save(
         view(tmpi.tm,:,:,1:ndt),date,tmpi,
-        SingleVariable("t_qwm"),
+        SingleVariable("Tm"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
     )
@@ -280,7 +280,7 @@ function calculate(
 
     save(
         view(tmpi.tm,:,:,1:ndt),date,tmpi,
-        SingleVariable("t_qwm"),
+        SingleVariable("Tm"),
         ERA5Region(GeoRegion("GLB"),gres=0.25),
         lsd
     )

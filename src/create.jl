@@ -4,7 +4,8 @@ function create(;
     path  :: AbstractString,
     verbose :: Bool = false,
     keepraw :: Bool = false,
-    precise :: Bool = true
+    precise :: Bool = true,
+    overwrite :: Bool = false
 )
 
     psfc = SingleVariable("sp")
@@ -16,9 +17,11 @@ function create(;
     tmpi = TmPiDataset(path=path,isprecise=precise)
 
     for date in start : Month(1) : stop
-        download(tmpi,date,[psfc,tsfc,tdew])
-        download(tmpi,date,[tair,shum])
-        calculate(tmpi,date,verbose,keepraw)
+        if overwrite || !isfile(e5dfnc(tmpi,SingleVariable("Tm"),date))
+            download(tmpi,date,[psfc,tsfc,tdew])
+            download(tmpi,date,[tair,shum])
+            calculate(tmpi,date,verbose,keepraw)
+        end
     end
 
 end

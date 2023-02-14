@@ -3,7 +3,7 @@ uuid = "49a64f13-ced2-4d2c-a6b2-5b9e17ba5cf7"
 keywords = ["meteorology", "climate", "water vapor", "gps"]
 desc = "Download and calculate water-vapor-weighted mean temperature from ERA5"
 authors = ["Nathanael Wong <natgeo.wong@outlook.com>"]
-version = "0.1.0"
+version = "1.0.0"
 
 [deps]
 Base64 = "2a0f44e3-6c83-55bd-87e4-b1978d98bd5f"

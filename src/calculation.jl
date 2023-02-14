@@ -301,3 +301,31 @@ function calculate(
     end
 
 end
+
+function calculatePi(
+    tmpi :: TmPiDataset,
+    date :: Date,
+)
+    
+    ndt = daysinmonth(date) * 24
+    nlon = length(tmpi.lsd.lon)
+    nlat = length(tmpi.lsd.lat)
+
+    ds = NCDataset(e5dfnc(tmpi,SingleVariable("Tm"),date))
+    NCDatasets.load!(ds["Tm"].var,tmpi.tm,:,:,1:ndt)
+    close(ds)
+
+    for idt in 1 : ndt, ilat in 1 : nlat, ilon in 1 : nlon
+        tmpi.Pi[ilon,ilat,idt] = calcTm2Pi(tmpi.tm[ilon,ilat,it])
+    end
+
+    @info "$(modulelog()) - Saving Pi data for $(year(date)) $(monthname(date))"
+    
+    save(
+        view(tmpi.Pi,:,:,1:ndt),date,tmpi,
+        SingleVariable("Pi"),
+        ERA5Region(GeoRegion("GLB"),gres=0.25),
+        lsd
+    )
+
+end

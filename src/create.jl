@@ -17,11 +17,18 @@ function create(;
     tmpi = TmPiDataset(path=path,isprecise=precise)
 
     for date in start : Month(1) : stop
+
         if overwrite || !isfile(e5dfnc(tmpi,SingleVariable("Tm"),date))
             download(tmpi,date,[psfc,tsfc,tdew])
             download(tmpi,date,[tair,shum])
             calculate(tmpi,date,verbose,keepraw)
         end
+
+        if  isfile(e5dfnc(tmpi,SingleVariable("Tm"),date)) && 
+           !isfile(e5dfnc(tmpi,SingleVariable("Pi"),date))
+            calculatePi(tmpi,date,)
+        end
+        
     end
 
 end

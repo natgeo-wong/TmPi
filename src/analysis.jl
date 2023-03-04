@@ -1,13 +1,13 @@
 function analysis(
     tmpi  :: TmPiDataset,
 	evar  :: SingleLevel;
-    dtbeg :: TimeType,
-    dtend :: TimeType,
+    start :: TimeType,
+    stop  :: TimeType,
     verbose :: Bool = false
 )
 
-    yrbeg = year(dtbeg)
-    yrend = year(dtend)
+    yrbeg = year(start)
+    yrend = year(stop)
 
     @info "$(modulelog()) - Loading the Global (0.25º Resolution) LandSea Dataset"
     lsd = tmpi.lsd
@@ -34,7 +34,7 @@ function analysis(
     mmax = zeros(Float64,nlon,25,13)
     mmin = zeros(Float64,nlon,25,13)
 
-    tvar = zeros(Int16,nlon,nlat,24,31)
+    tvar = zeros(Float64,nlon,nlat,24,31)
     rvar = zeros(Float64,nlon,nlat,24,31)
     dvar = zeros(Float64,nlon,nlat,31)
 
@@ -48,19 +48,11 @@ function analysis(
             end
             ndy = daysinmonth(Date(yr,mo))
             ds  = NCDataset(e5dfnc(tmpi,evar,Date(yr,mo)))
-            sc  = ds[evar.varID].attrib["scale_factor"]
-            of  = ds[evar.varID].attrib["add_offset"]
-            mv  = ds[evar.varID].attrib["missing_value"]
-            fv  = ds[evar.varID].attrib["_FillValue"]
             for idy = 1 : ndy, ihr = 1 : 24
                 it = ihr + (idy-1) * 24
                 tvr = view(tvar,:,:,ihr,idy)
                 NCDatasets.load!(ds[evar.varID].var,tvr,:,:,it)
             end
-            int2real!(
-                view(rvar,:,:,:,1:ndy), view(tvar,:,:,:,1:ndy),
-                scale=sc, offset=of, mvalue=mv, fvalue=fv
-            )
             close(ds)
 
             if verbose

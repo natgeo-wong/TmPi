@@ -34,7 +34,6 @@ function analysis(
     mmax = zeros(Float64,nlon,25,13)
     mmin = zeros(Float64,nlon,25,13)
 
-    tvar = zeros(Float64,nlon,nlat,24,31)
     rvar = zeros(Float64,nlon,nlat,24,31)
     dvar = zeros(Float64,nlon,nlat,31)
 
@@ -50,7 +49,7 @@ function analysis(
             ds  = NCDataset(e5dfnc(tmpi,evar,Date(yr,mo)))
             for idy = 1 : ndy, ihr = 1 : 24
                 it = ihr + (idy-1) * 24
-                tvr = view(tvar,:,:,ihr,idy)
+                tvr = view(rvar,:,:,ihr,idy)
                 NCDatasets.load!(ds[evar.varID].var,tvr,:,:,it)
             end
             close(ds)

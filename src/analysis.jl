@@ -1,4 +1,4 @@
-function analysis(
+function analysis(;
     start :: TimeType,
     stop  :: TimeType,
     path  :: AbstractString,

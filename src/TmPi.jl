@@ -27,7 +27,7 @@ import Base: download
 
 ## Exporting the following functions:
 export
-        create, analysis, TmPiDataset
+        create, analysis, readTm, readPi, TmPiDataset
 
 ## Abstract SuperTypes
 """
@@ -76,6 +76,7 @@ include("download.jl")
 include("calculation.jl")
 include("analysis.jl")
 include("filesystem.jl")
+include("read.jl")
 include("backend.jl")
 
 end

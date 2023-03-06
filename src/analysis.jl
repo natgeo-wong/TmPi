@@ -1,11 +1,10 @@
 function analysis(
-    evar  :: SingleLevel;
     start :: TimeType,
     stop  :: TimeType,
     path  :: AbstractString,
     verbose :: Bool = false
 )
-
+        
     yrbeg = year(start)
     yrend = year(stop)
 
@@ -37,7 +36,7 @@ function analysis(
     rvar = zeros(Float64,nlon,nlat,24,31)
     dvar = zeros(Float64,nlon,nlat,31)
 
-    for yr in yrbeg : yrend
+    for evar in [SingleVariable("Tm"),SingleVariable("Pi")], yr in yrbeg : yrend
 
         @info "$(modulelog()) - Calculating monthly climatology and diurnal statistics for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
         for mo in 1 : 12
@@ -85,10 +84,17 @@ function analysis(
 
         @info "$(modulelog()) - Calculating yearly climatology for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
         for ihr = 1 : 25, ilat = 1 : nlat, ilon = 1 : nlon
-            davg[ilon,ilat,ihr,end] = mean(view(davg,ilon,ilat,ihr,1:12))
-            dstd[ilon,ilat,ihr,end] = mean(view(dstd,ilon,ilat,ihr,1:12))
-            dmax[ilon,ilat,ihr,end] = maximum(view(dmax,ilon,ilat,ihr,1:12))
-            dmin[ilon,ilat,ihr,end] = minimum(view(dmin,ilon,ilat,ihr,1:12))
+            for imo = 1 : 12
+                dtii = Date(yr,imo)
+                davg[ilon,ilat,ihr,end] += davg[ilon,ilat,ihr,imo] * daysinmonth(dtii)
+                dstd[ilon,ilat,ihr,end] += dstd[ilon,ilat,ihr,imo] * daysinmonth(dtii)
+                dmax[ilon,ilat,ihr,end] += dmax[ilon,ilat,ihr,imo] * daysinmonth(dtii)
+                dmin[ilon,ilat,ihr,end] += dmin[ilon,ilat,ihr,imo] * daysinmonth(dtii)
+            end
+            davg[ilon,ilat,ihr,end] /= daysinyear(yr)
+            dstd[ilon,ilat,ihr,end] /= daysinyear(yr)
+            dmax[ilon,ilat,ihr,end] /= daysinyear(yr)
+            dmin[ilon,ilat,ihr,end] /= daysinyear(yr)
         end
 
         @info "$(modulelog()) - Calculating zonal-averaged climatology for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr ..."

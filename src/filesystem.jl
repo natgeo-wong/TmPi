@@ -11,6 +11,19 @@ function e5dfnc(
 
 end
 
+function e5dfnc(
+    path :: AbstractString,
+	evar :: SingleLevel,
+    date :: TimeType
+)
+
+    dts = yr2str(date)
+    fol = joinpath(path,evar.varID,dts)
+    fnc = evar.varID * "-" * yrmo2str(date) * ".nc"
+    return joinpath(fol,fnc)
+
+end
+
 function e5danc(
     tmpi :: TmPiDataset,
 	evar :: SingleLevel,
@@ -19,6 +32,17 @@ function e5danc(
 
     fnc = evar.varID * "-" * yr2str(date) * ".nc"
     return joinpath(tmpi.path,evar.varID,fnc)
+
+end
+
+function e5danc(
+    path :: AbstractString,
+	evar :: SingleLevel,
+    date :: TimeType
+)
+
+    fnc = evar.varID * "-" * yr2str(date) * ".nc"
+    return joinpath(path,evar.varID,fnc)
 
 end
 

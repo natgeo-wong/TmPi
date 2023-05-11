@@ -13,7 +13,7 @@ using NumericalIntegration
 using Statistics
 
 ## Import relevant functions from ERA5Reanalysis.jl
-using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region
+using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region, ERA5Hourly
 using ERA5Reanalysis: SingleLevel, PressureLevel, SingleVariable, PressureVariable
 using ERA5Reanalysis: LandSea, getLandSea
 using ERA5Reanalysis: isSingle, era5Pressures, download
@@ -24,6 +24,7 @@ using Reexport
 @reexport using GeoRegions
 
 import Base: download
+import ERA5Reanalysis
 
 ## Exporting the following functions:
 export
@@ -77,6 +78,7 @@ include("calculation.jl")
 include("analysis.jl")
 include("filesystem.jl")
 include("read.jl")
+include("tmpi2era5.jl")
 include("backend.jl")
 
 end

@@ -83,7 +83,6 @@ function save(
     ds.attrib["doi"] = tmpi.sldoi
 
     nhr = 24 * daysinmonth(date)
-    scale,offset = ncoffsetscale(data)
 
     ds.dim["longitude"] = length(lsd.lon);
     ds.dim["latitude"]  = length(lsd.lat);

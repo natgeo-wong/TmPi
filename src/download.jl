@@ -6,7 +6,7 @@ function download(
 
     ckeys = cdskey()
 
-    @info "$(modulelog()) - Using CDSAPI in Julia to download SINGLE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
+    @info "$(modulelog()) - Using CDSAPI in Julia to download SINGLE-LEVEL $(uppercase(tmpi.name)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
 
     fnc = joinpath(tmpi.path,"tmpnc-single-$(date).nc")
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
@@ -54,7 +54,7 @@ function download(
 
     ckeys = cdskey()
 
-    @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
+    @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.name)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
 
     for evarii in evar
 
@@ -107,7 +107,7 @@ function download(
 
     ckeys = cdskey()
 
-    @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.lname)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
+    @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.name)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
 
     for ip in tmpi.p
 

@@ -15,7 +15,7 @@ struct TmPiDefault{ST<:AbstractString} <: TmPiDataset
     tmp2D :: Array{Int16,2}
     tmp3D :: Array{Int16,3}
 
-    lname :: ST
+    name  :: ST
     ptype :: ST
 	sldoi :: ST
     path  :: ST

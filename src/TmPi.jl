@@ -16,14 +16,14 @@ using Statistics
 using ERA5Reanalysis: ERA5Dataset, ERA5Variable, ERA5Region, ERA5Hourly
 using ERA5Reanalysis: SingleLevel, PressureLevel, SingleVariable, PressureVariable
 using ERA5Reanalysis: LandSea, getLandSea
-using ERA5Reanalysis: isSingle, era5Pressures, download
+using ERA5Reanalysis: isSingle, era5Pressures
 
 ## Reexporting exported functions within these modules
 using Reexport
 @reexport using Dates
 @reexport using GeoRegions
 
-import Base: download
+import Downloads: download
 import ERA5Reanalysis
 
 ## Exporting the following functions:

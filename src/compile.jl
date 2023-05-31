@@ -26,7 +26,7 @@ function compile(
 
     for yr in yrbeg : yrend
 
-        @info "$(modulelog()) - Loading $(uppercase(tmpi.lname)) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $yr ..."
+        @info "$(modulelog()) - Loading $(uppercase(tmpi.name)) $(evar.name) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.resolution)) for $yr ..."
 
         eds = NCDataset(e5danc(tmpi,evar,date))
 
@@ -82,7 +82,7 @@ function save(
     dtend :: TimeType,
 )
 
-    @info "$(modulelog()) - Saving compiled $(tmpi.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) from $(year(dtbeg)) to $(year(dtend)) ..."
+    @info "$(modulelog()) - Saving compiled $(tmpi.name) $(evar.name) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.resolution)) from $(year(dtbeg)) to $(year(dtend)) ..."
     fnc = e5dcnc(tmpi,evar,dtbeg,dtend)
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
     if isfile(fnc)
@@ -113,8 +113,8 @@ function save(
     nclat[:] = lsd.lat
     
     attr_var = Dict(
-        "long_name"     => evar.lname,
-        "full_name"     => evar.vname,
+        "long_name"     => evar.long,
+        "full_name"     => evar.name,
         "units"         => evar.units,
         "_FillValue"    => Int16(-32767),
         "missing_value" => Int16(-32767),
@@ -164,6 +164,6 @@ function save(
 
     close(ds)
 
-    @info "$(modulelog()) - Compiled $(uppercase(tmpi.lname)) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) from $(year(dtbeg)) to $(year(dtend)) has been saved into $(fnc)."
+    @info "$(modulelog()) - Compiled $(uppercase(tmpi.name)) $(evar.name) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.resolution)) from $(year(dtbeg)) to $(year(dtend)) has been saved into $(fnc)."
 
 end

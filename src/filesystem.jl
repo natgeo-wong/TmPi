@@ -5,8 +5,8 @@ function e5dfnc(
 )
 
     dts = yr2str(date)
-    fol = joinpath(tmpi.path,evar.varID,dts)
-    fnc = evar.varID * "-" * yrmo2str(date) * ".nc"
+    fol = joinpath(tmpi.path,evar.ID,dts)
+    fnc = evar.ID * "-" * yrmo2str(date) * ".nc"
     return joinpath(fol,fnc)
 
 end
@@ -18,8 +18,8 @@ function e5dfnc(
 )
 
     dts = yr2str(date)
-    fol = joinpath(path,evar.varID,dts)
-    fnc = evar.varID * "-" * yrmo2str(date) * ".nc"
+    fol = joinpath(path,evar.ID,dts)
+    fnc = evar.ID * "-" * yrmo2str(date) * ".nc"
     return joinpath(fol,fnc)
 
 end
@@ -30,8 +30,8 @@ function e5danc(
     date :: TimeType
 )
 
-    fnc = evar.varID * "-" * yr2str(date) * ".nc"
-    return joinpath(tmpi.path,evar.varID,fnc)
+    fnc = evar.ID * "-" * yr2str(date) * ".nc"
+    return joinpath(tmpi.path,evar.ID,fnc)
 
 end
 
@@ -41,8 +41,8 @@ function e5danc(
     date :: TimeType
 )
 
-    fnc = evar.varID * "-" * yr2str(date) * ".nc"
-    return joinpath(path,evar.varID,fnc)
+    fnc = evar.ID * "-" * yr2str(date) * ".nc"
+    return joinpath(path,evar.ID,fnc)
 
 end
 
@@ -53,8 +53,8 @@ function e5dcnc(
     dtend :: TimeType
 )
 
-    fnc = evar.varID * "-$(yr2str(dtbeg))_$(yr2str(dtend)).nc"
-    return joinpath(tmpi.path,evar.varID,fnc)
+    fnc = evar.ID * "-$(yr2str(dtbeg))_$(yr2str(dtend)).nc"
+    return joinpath(tmpi.path,evar.ID,fnc)
 
 end
 
@@ -67,7 +67,7 @@ function save(
     lsd  :: LandSea
 )
 
-    @info "$(modulelog()) - Saving raw $(tmpi.lname) $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) $(Dates.monthname(date)) ..."
+    @info "$(modulelog()) - Saving raw $(tmpi.name) $(evar.name) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.resolution)) for $(year(date)) $(Dates.monthname(date)) ..."
 
     fnc = e5dfnc(tmpi,evar,date)
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
@@ -104,9 +104,9 @@ function save(
         "calendar"  => "gregorian",
     ))
 
-    ncvar = defVar(ds,evar.varID,Float64,("longitude","latitude","time"),attrib = Dict(
-        "long_name"     => evar.lname,
-        "full_name"     => evar.vname,
+    ncvar = defVar(ds,evar.ID,Float64,("longitude","latitude","time"),attrib = Dict(
+        "long_name"     => evar.long,
+        "full_name"     => evar.name,
         "units"         => evar.units,
         # "scale_factor"  => scale,
         # "add_offset"    => offset,
@@ -126,6 +126,6 @@ function save(
 
     close(ds)
 
-    @info "$(modulelog()) - Raw $(uppercase(tmpi.lname)) $(evar.vname) in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) $(Dates.monthname(date)) has been saved into $(fnc)."
+    @info "$(modulelog()) - Raw $(uppercase(tmpi.name)) $(evar.name) in $(ereg.geo.name) (Horizontal Resolution: $(ereg.resolution)) for $(year(date)) $(Dates.monthname(date)) has been saved into $(fnc)."
 
 end

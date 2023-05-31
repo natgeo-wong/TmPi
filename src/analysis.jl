@@ -38,30 +38,30 @@ function analysis(;
 
     for evar in [SingleVariable("Tm"),SingleVariable("Pi")], yr in yrbeg : yrend
 
-        @info "$(modulelog()) - Calculating monthly climatology and diurnal statistics for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
+        @info "$(modulelog()) - Calculating monthly climatology and diurnal statistics for ERA5 Hourly $(evar.name) data in Global (0.25º Resolution) during $yr ..."
         for mo in 1 : 12
 
             if verbose
-                @info "$(modulelog()) - Loading ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Loading ERA5 Hourly $(evar.name) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
             end
             ndy = daysinmonth(Date(yr,mo))
             ds  = NCDataset(e5dfnc(path,evar,Date(yr,mo)))
             for idy = 1 : ndy, ihr = 1 : 24
                 it = ihr + (idy-1) * 24
                 tvr = view(rvar,:,:,ihr,idy)
-                NCDatasets.load!(ds[evar.varID].var,tvr,:,:,it)
+                NCDatasets.load!(ds[evar.ID].var,tvr,:,:,it)
             end
             close(ds)
 
             if verbose
-                @info "$(modulelog()) - Calculating daily means for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Calculating daily means for ERA5 Hourly $(evar.name) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
             end
             for idy = 1 : ndy, ilat = 1 : nlat, ilon = 1 : nlon
                 dvar[ilon,ilat,idy] = mean(view(rvar,ilon,ilat,:,idy))
             end
 
             if verbose
-                @info "$(modulelog()) - Calculating diurnal statistics for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Calculating diurnal statistics for ERA5 Hourly $(evar.name) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
             end
             for ihr = 1 : 24, ilat = 1 : nlat, ilon = 1 : nlon
                 davg[ilon,ilat,ihr,mo] = mean(view(rvar,ilon,ilat,ihr,1:ndy))
@@ -71,7 +71,7 @@ function analysis(;
             end
 
             if verbose
-                @info "$(modulelog()) - Calculating monthly climatology for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
+                @info "$(modulelog()) - Calculating monthly climatology for ERA5 Hourly $(evar.name) data in Global (0.25º Resolution) during $yr $(monthname(mo)) ..."
             end
             for ilat = 1 : nlat, ilon = 1 : nlon
                 davg[ilon,ilat,25,mo] = mean(view(dvar,ilon,ilat,1:ndy))
@@ -82,7 +82,7 @@ function analysis(;
 
         end
 
-        @info "$(modulelog()) - Calculating yearly climatology for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
+        @info "$(modulelog()) - Calculating yearly climatology for ERA5 Hourly $(evar.name) data in Global (0.25º Resolution) during $yr ..."
         for ihr = 1 : 25, ilat = 1 : nlat, ilon = 1 : nlon
             davg[ilon,ilat,ihr,end] = 0
             dstd[ilon,ilat,ihr,end] = 0
@@ -101,7 +101,7 @@ function analysis(;
             dmin[ilon,ilat,ihr,end] /= daysinyear(yr)
         end
 
-        @info "$(modulelog()) - Calculating zonal-averaged climatology for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
+        @info "$(modulelog()) - Calculating zonal-averaged climatology for ERA5 Hourly $(evar.name) data in Global (0.25º Resolution) during $yr ..."
         for ilat = 1 : nlat, ihr = 1 : 25, imo = 1 : 13
             zavg[ilat,ihr,imo] = nanmean(view(davg,:,ilat,ihr,imo),lon_NaN);
             zstd[ilat,ihr,imo] = nanmean(view(dstd,:,ilat,ihr,imo),lon_NaN);
@@ -109,7 +109,7 @@ function analysis(;
             zmin[ilat,ihr,imo] = nanmean(view(dmin,:,ilat,ihr,imo),lon_NaN);
         end
         
-        @info "$(modulelog()) - Calculating meridional-averaged climatology for ERA5 Hourly $(evar.vname) data in Global (0.25º Resolution) during $yr ..."
+        @info "$(modulelog()) - Calculating meridional-averaged climatology for ERA5 Hourly $(evar.name) data in Global (0.25º Resolution) during $yr ..."
         for imo = 1 : 13, ihr = 1 : 25, ilon = 1 : nlon;
             mavg[ilon,ihr,imo] = nanmean(view(davg,ilon,:,ihr,imo),lat_NaN);
             mstd[ilon,ihr,imo] = nanmean(view(dstd,ilon,:,ihr,imo),lat_NaN);
@@ -146,7 +146,7 @@ function save(
     lsd  :: LandSea
 )
 
-    @info "$(modulelog()) - Saving analyzed ERA5 Hourly $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) ..."
+    @info "$(modulelog()) - Saving analyzed ERA5 Hourly $(evar.name) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) ..."
     fnc = e5danc(path,evar,date)
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
     if isfile(fnc)
@@ -179,8 +179,8 @@ function save(
     nclat[:] = lsd.lat
     
     attr_var = Dict(
-        "long_name"     => evar.lname,
-        "full_name"     => evar.vname,
+        "long_name"     => evar.long,
+        "full_name"     => evar.name,
         "units"         => evar.units,
         "_FillValue"    => Int16(-32767),
         "missing_value" => Int16(-32767),
@@ -548,6 +548,6 @@ function save(
 
     close(ds)
 
-    @info "$(modulelog()) - Analyzed ERA5 HOURLY $(evar.vname) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) has been saved into $(fnc)."
+    @info "$(modulelog()) - Analyzed ERA5 HOURLY $(evar.name) data in $(ereg.geo.name) (Horizontal Resolution: $(ereg.gres)) for $(year(date)) has been saved into $(fnc)."
 
 end

@@ -120,7 +120,7 @@ function calculate(
             btm = @view bot[ind]
             ipp = @view ipv[ind]
 
-            tmpi.tm[ilon,ilat,it] = integrate(ipp,top) / integrate(ipp,btm)
+            tmpi.tm[ilon,ilat,it] = trapz(ipp,top) / trapz(ipp,btm)
             tmpi.Pi[ilon,ilat,it] = calcTm2Pi(tmpi.tm[ilon,ilat,it])
 
         end
@@ -264,7 +264,7 @@ function calculate(
             btm = @view bot[ind]
             ipp = @view ipv[ind]
 
-            tmpi.tm[ilon,ilat,it] = integrate(ipp,top) / integrate(ipp,btm)
+            tmpi.tm[ilon,ilat,it] = trapz(ipp,top) / trapz(ipp,btm)
             tmpi.Pi[ilon,ilat,it] = calcTm2Pi(tmpi.tm[ilon,ilat,it])
 
         end

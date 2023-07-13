@@ -9,7 +9,7 @@ using Printf
 using HTTP
 using JSON
 using NCDatasets
-using NumericalIntegration
+using Trapz
 using Statistics
 
 ## Import relevant functions from ERA5Reanalysis.jl

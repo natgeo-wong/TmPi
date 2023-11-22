@@ -117,7 +117,7 @@ function save(
     nclon[:]  = lsd.lon
     nclat[:]  = lsd.lat
     nctime[:] = collect(1:nhr) .- 1
-    ncvar[:]  = data
+    ncvar[:,:,:]  = data
 
     # if iszero(sum(isnan.(data)))
     #       ncvar[:] = data

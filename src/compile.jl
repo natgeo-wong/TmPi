@@ -30,22 +30,28 @@ function compile(
 
         eds = NCDataset(e5danc(tmpi,evar,date))
 
-        eavg += eds["domain_yearly_mean_climatology"][:]
-        erng += (eds["domain_yearly_maximum_climatology"][:] .- 
-                 eds["domain_yearly_minimum_climatology"][:])
-        esea += dropdims(maximum(eds["domain_monthly_mean_climatology"][:],dims=3) .- 
-                         minimum(eds["domain_monthly_mean_climatology"][:],dims=3),dims=3)
-        eitr += dropdims(mean(eds["domain_monthly_maximum_climatology"][:] .- 
-                              eds["domain_monthly_minimum_climatology"][:],dims=3),dims=3)
-        edhr += dropdims(maximum(eds["domain_yearly_mean_hourly"][:],dims=3) .- 
-                         minimum(eds["domain_yearly_mean_hourly"][:],dims=3),dims=3)
+        eavg += eds["domain_yearly_mean_climatology"][:,:]
+        erng += (eds["domain_yearly_maximum_climatology"][:,:] .- 
+                 eds["domain_yearly_minimum_climatology"][:,:])
+        esea += dropdims(
+            maximum(eds["domain_monthly_mean_climatology"][:,:,:],dims=3) .-             
+            minimum(eds["domain_monthly_mean_climatology"][:,:,:],dims=3),dims=3
+        )
+        eitr += dropdims(
+            mean(
+                eds["domain_monthly_maximum_climatology"][:,:,:] .- 
+                eds["domain_monthly_minimum_climatology"][:,:,:],dims=3
+            ),dims=3
+        )
+        edhr += dropdims(maximum(eds["domain_yearly_mean_hourly"][:,:,:],dims=3) .- 
+                         minimum(eds["domain_yearly_mean_hourly"][:,:,:],dims=3),dims=3)
 
         if yr == yrbeg
-            emax += eds["domain_yearly_mean_climatology"][:]
-            emin += eds["domain_yearly_mean_climatology"][:]
+            emax += eds["domain_yearly_mean_climatology"][:,:]
+            emin += eds["domain_yearly_mean_climatology"][:,:]
         else
-            emax .= max.(eds["domain_yearly_mean_climatology"][:],emax)
-            emin .= min.(eds["domain_yearly_mean_climatology"][:],emax)
+            emax .= max.(eds["domain_yearly_mean_climatology"][:,:],emax)
+            emin .= min.(eds["domain_yearly_mean_climatology"][:,:],emax)
         end
 
         close(eds)
@@ -125,42 +131,42 @@ function save(
     attr_var["add_offset"]   = offset
     ncvar = defVar(ds,"average",Int16,
         ("longitude","latitude"),attrib=attr_var)
-    ncvar.var[:] = eavg
+    ncvar.var[:,:] = eavg
 
     scale,offset = ncoffsetscale(edhr)
     attr_var["scale_factor"] = scale
     attr_var["add_offset"]   = offset
     ncvar = defVar(ds,"variability_diurnal",Int16,
         ("longitude","latitude"),attrib=attr_var)
-    ncvar.var[:] = edhr
+    ncvar.var[:,:] = edhr
 
     scale,offset = ncoffsetscale(eitr)
     attr_var["scale_factor"] = scale
     attr_var["add_offset"]   = offset
     ncvar = defVar(ds,"variability_intraseasonal",Int16,
         ("longitude","latitude"),attrib=attr_var)
-    ncvar.var[:] = eitr
+    ncvar.var[:,:] = eitr
 
     scale,offset = ncoffsetscale(esea)
     attr_var["scale_factor"] = scale
     attr_var["add_offset"]   = offset
     ncvar = defVar(ds,"variability_seasonal",Int16,
         ("longitude","latitude"),attrib=attr_var)
-    ncvar.var[:] = esea
+    ncvar.var[:,:] = esea
 
     scale,offset = ncoffsetscale(eian)
     attr_var["scale_factor"] = scale
     attr_var["add_offset"]   = offset
     ncvar = defVar(ds,"variability_interannual",Int16,
         ("longitude","latitude"),attrib=attr_var)
-    ncvar.var[:] = eian
+    ncvar.var[:,:] = eian
 
     scale,offset = ncoffsetscale(erng)
     attr_var["scale_factor"] = scale
     attr_var["add_offset"]   = offset
     ncvar = defVar(ds,"variability_noise",Int16,
         ("longitude","latitude"),attrib=attr_var)
-    ncvar.var[:] = erng
+    ncvar.var[:,:] = erng
 
     close(ds)
 

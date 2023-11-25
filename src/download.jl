@@ -16,7 +16,7 @@ function download(
         "year"         => year(date),
         "month"        => month(date),
         "day"          => collect(1:31),
-        "variable"     => [evarii.lname for evarii in evar],
+        "variable"     => [evarii.long for evarii in evar],
         "area"         => [90, 0, -90, 360],
         "grid"         => [0.25, 0.25],
         "time"         => [
@@ -58,7 +58,7 @@ function download(
 
     for evarii in evar
 
-        fnc = joinpath(tmpi.path,"tmpnc-pressure-$(evarii.varID)-$(date).nc")
+        fnc = joinpath(tmpi.path,"tmpnc-pressure-$(evarii.ID)-$(date).nc")
         fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
 
         e5dkey = Dict(
@@ -66,7 +66,7 @@ function download(
             "year"           => year(date),
             "month"          => month(date),
             "day"            => collect(1:31),
-            "variable"       => evarii.lname,
+            "variable"       => evarii.long,
             "pressure_level" => tmpi.p ./ 100,
             "area"           => [90, 0, -90, 360],
             "grid"           => [0.25, 0.25],
@@ -119,7 +119,7 @@ function download(
             "year"           => year(date),
             "month"          => month(date),
             "day"            => collect(1:31),
-            "variable"       => [evarii.lname for evarii in evar],
+            "variable"       => [evarii.long for evarii in evar],
             "pressure_level" => ip ./ 100,
             "area"           => [90, 0, -90, 360],
             "grid"           => [0.25, 0.25],

@@ -136,14 +136,14 @@ function calculate(
     save(
         view(tmpi.tm,:,:,1:ndt),date,tmpi,
         SingleVariable("Tm"),
-        ERA5Region(GeoRegion("GLB"),gres=0.25),
+        ERA5Region(GeoRegion("GLB"),resolution=0.25),
         lsd
     )
 
     save(
         view(tmpi.Pi,:,:,1:ndt),date,tmpi,
         SingleVariable("Pi"),
-        ERA5Region(GeoRegion("GLB"),gres=0.25),
+        ERA5Region(GeoRegion("GLB"),resolution=0.25),
         lsd
     )
 
@@ -281,14 +281,14 @@ function calculate(
     save(
         view(tmpi.tm,:,:,1:ndt),date,tmpi,
         SingleVariable("Tm"),
-        ERA5Region(GeoRegion("GLB"),gres=0.25),
+        ERA5Region(GeoRegion("GLB"),resolution=0.25),
         lsd
     )
 
     save(
         view(tmpi.Pi,:,:,1:ndt),date,tmpi,
         SingleVariable("Pi"),
-        ERA5Region(GeoRegion("GLB"),gres=0.25),
+        ERA5Region(GeoRegion("GLB"),resolution=0.25),
         lsd
     )
 
@@ -324,7 +324,7 @@ function calculatePi(
     save(
         view(tmpi.Pi,:,:,1:ndt),date,tmpi,
         SingleVariable("Pi"),
-        ERA5Region(GeoRegion("GLB"),gres=0.25),
+        ERA5Region(GeoRegion("GLB"),resolution=0.25),
         lsd
     )
 

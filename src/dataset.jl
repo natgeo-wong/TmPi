@@ -56,8 +56,9 @@ function TmPiDataset(;
     p = era5Pressures(); np = length(p)
     p = Float64.(p*100)
 
+    e5ds = ERA5Dummy(path=path)
     @info "$(modulelog()) - Loading Global LandSea dataset (0.25º resolution)"
-    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),resolution=0.25),path=path)
+    lsd  = getLandSea(e5ds,ERA5Region(GeoRegion("GLB"),resolution=0.25))
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 

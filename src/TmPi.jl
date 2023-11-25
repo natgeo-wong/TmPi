@@ -4,7 +4,7 @@ module TmPi
 using Base64
 using Logging
 using Printf
-using Threads
+using Base.Threads
 
 ## Modules Used
 using HTTP

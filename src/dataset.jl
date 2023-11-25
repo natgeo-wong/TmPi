@@ -57,7 +57,7 @@ function TmPiDataset(;
     p = Float64.(p*100)
 
     @info "$(modulelog()) - Loading Global LandSea dataset (0.25º resolution)"
-    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),gres=0.25),path=path)
+    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),resolution=0.25),path=path)
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 

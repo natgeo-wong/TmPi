@@ -9,7 +9,7 @@ function analysis(;
     yrend = year(stop)
 
     @info "$(modulelog()) - Loading the Global (0.25º Resolution) LandSea Dataset"
-    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),gres=0.25),path=path)
+    lsd  = getLandSea(ERA5Region(GeoRegion("GLB"),resolution=0.25),path=path)
     nlon = length(lsd.lon)
     nlat = length(lsd.lat)
 

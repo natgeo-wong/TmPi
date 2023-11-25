@@ -7,6 +7,7 @@ function download(
     ckeys = cdskey()
 
     @info "$(modulelog()) - Using CDSAPI in Julia to download SINGLE-LEVEL $(uppercase(tmpi.name)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
+    flush(stderr)
 
     fnc = joinpath(tmpi.path,"tmpnc-single-$(date).nc")
     fol = dirname(fnc); if !isdir(fol); mkpath(fol) end
@@ -33,14 +34,17 @@ function download(
         while isinteger(tryretrieve) && (tryretrieve < 20)
             try
                 retrieve("reanalysis-era5-single-levels",e5dkey,fnc,ckeys)
+                flush(stderr)
                 tryretrieve += 0.5
             catch
                 tryretrieve += 1
                 @info "$(modulelog()) - Failed to retrieve/request data from CDSAPI on Attempt $(tryretrieve) of 20"
+                flush(stderr)
             end
         end
         if tryretrieve == 20
             @warn "$(modulelog()) - Failed to retrieve/request data, skipping to next set of requests"
+            flush(stderr)
         end
     end
 
@@ -55,6 +59,7 @@ function download(
     ckeys = cdskey()
 
     @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.name)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
+    flush(stderr)
 
     for evarii in evar
 
@@ -84,14 +89,17 @@ function download(
             while isinteger(tryretrieve) && (tryretrieve < 20)
                 try
                     retrieve("reanalysis-era5-pressure-levels",e5dkey,fnc,ckeys)
+                    flush(stderr)
                     tryretrieve += 0.5
                 catch
                     tryretrieve += 1
                     @info "$(modulelog()) - Failed to retrieve/request data from CDSAPI on Attempt $(tryretrieve) of 20"
+                    flush(stderr)
                 end
             end
             if tryretrieve == 20
                 @warn "$(modulelog()) - Failed to retrieve/request data, skipping to next set of requests"
+                flush(stderr)
             end
         end
 
@@ -108,6 +116,7 @@ function download(
     ckeys = cdskey()
 
     @info "$(modulelog()) - Using CDSAPI in Julia to download PRESSURE-LEVEL $(uppercase(tmpi.name)) data in the Global Region (Horizontal Resolution: 0.25) for $(date)."
+    flush(stderr)
 
     for ip in tmpi.p
 
@@ -138,13 +147,16 @@ function download(
                 try
                     retrieve("reanalysis-era5-pressure-levels",e5dkey,fnc,ckeys)
                     tryretrieve += 0.5
+                    flush(stderr)
                 catch
                     tryretrieve += 1
                     @info "$(modulelog()) - Failed to retrieve/request data from CDSAPI on Attempt $(tryretrieve) of 20"
+                    flush(stderr)
                 end
             end
             if tryretrieve == 20
                 @warn "$(modulelog()) - Failed to retrieve/request data, skipping to next set of requests"
+                flush(stderr)
             end
         end
 

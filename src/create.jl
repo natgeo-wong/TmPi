@@ -16,6 +16,8 @@ function create(;
 
     tmpi = TmPiDataset(path=path,isprecise=precise)
 
+    flush(stderr)
+
     for date in start : Month(1) : stop
 
         if overwrite || !isfile(e5dfnc(tmpi,SingleVariable("Tm"),date))

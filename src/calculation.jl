@@ -35,6 +35,7 @@ function calculate(
     ita = zeros(Float64,np+2)
     ish = zeros(Float64,np+2)
     ipv = Float64.(vcat(0,p,0))
+    flush(stderr)
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets in $(year(date)) $(monthname(date))"
     sds = NCDataset(joinpath(tmpi.path,"tmpnc-single-$date.nc"))
@@ -49,11 +50,13 @@ function calculate(
     nlat = length(lsd.lat)
 
     @info "$(modulelog()) - Calculating Tm and Pi for $(year(date)) $(monthname(date))"
+    flush(stderr)
 
     for it in 1 : ndt
 
         if verbose
             @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt in $(year(date)) $(monthname(date))"
+            flush(stderr)
         end
 
         sc = sds["t2m"].attrib["scale_factor"]
@@ -146,6 +149,7 @@ function calculate(
         ERA5Region(GeoRegion("GLB"),resolution=0.25),
         lsd
     )
+    flush(stderr)
 
     if !keepraw
         @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
@@ -153,6 +157,7 @@ function calculate(
         rm(joinpath(tmpi.path,"tmpnc-pressure-t-$date.nc"),force=true)
         rm(joinpath(tmpi.path,"tmpnc-pressure-q-$date.nc"),force=true)
     end
+    flush(stderr)
 end
 
 function calculate(
@@ -171,6 +176,7 @@ function calculate(
     ita = zeros(Float64,np+2)
     ish = zeros(Float64,np+2)
     ipv = Float64.(vcat(0,p,0))
+    flush(stderr)
 
     @info "$(modulelog()) - Opening NetCDF files for Single Level datasets in $(year(date)) $(monthname(date))"
     sds = NCDataset(joinpath(tmpi.path,"tmpnc-single-$date.nc"))
@@ -187,11 +193,13 @@ function calculate(
     nlat = length(lsd.lat)
 
     @info "$(modulelog()) - Calculating Tm and Pi for $(year(date)) $(monthname(date))"
+    flush(stderr)
 
     for it in 1 : ndt
 
         if verbose
             @info "$(modulelog()) - Calculating Tm and Pi for step $it out of $ndt in $(year(date)) $(monthname(date))"
+            flush(stderr)
         end
 
         sc = sds["t2m"].attrib["scale_factor"]
@@ -291,6 +299,7 @@ function calculate(
         ERA5Region(GeoRegion("GLB"),resolution=0.25),
         lsd
     )
+    flush(stderr)
 
     if !keepraw
         @info "$(modulelog()) - Removing temporary data downloaded from ERA5 to save space"
@@ -299,6 +308,7 @@ function calculate(
            rm(joinpath(tmpi.path,"tmpnc-pressure-$(p[ip])-$date.nc"),force=true)
         end
     end
+    flush(stderr)
 
 end
 
@@ -320,6 +330,7 @@ function calculatePi(
     end
 
     @info "$(modulelog()) - Saving Pi data for $(year(date)) $(monthname(date))"
+    flush(stderr)
     
     save(
         view(tmpi.Pi,:,:,1:ndt),date,tmpi,
@@ -327,5 +338,6 @@ function calculatePi(
         ERA5Region(GeoRegion("GLB"),resolution=0.25),
         lsd
     )
+    flush(stderr)
 
 end

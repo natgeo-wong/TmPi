@@ -95,7 +95,7 @@ function calculate(
         int2real!(tmpi.sh,tmpi.tmp3D,scale=sc,offset=of,mvalue=mv,fvalue=fv)
 
 
-        Threads.@threads for ilat = 1 : nlat, ilon = 1 : nlon
+        for ilat = 1 : nlat, ilon = 1 : nlon
 
             its = tmpi.ts[ilon,ilat]
             itd = tmpi.td[ilon,ilat]
@@ -244,7 +244,7 @@ function calculate(
 
         end
 
-        Threads.@threads for ilat = 1 : nlat, ilon = 1 : nlon
+        for ilat = 1 : nlat, ilon = 1 : nlon
 
             its = tmpi.ts[ilon,ilat]
             itd = tmpi.td[ilon,ilat]
@@ -325,7 +325,7 @@ function calculatePi(
     NCDatasets.load!(ds["Tm"].var,tmpi.tm,:,:,1:ndt)
     close(ds)
 
-    Threads.@threads for idt in 1 : ndt, ilat in 1 : nlat, ilon in 1 : nlon
+    for idt in 1 : ndt, ilat in 1 : nlat, ilon in 1 : nlon
         tmpi.Pi[ilon,ilat,idt] = calcTm2Pi(tmpi.tm[ilon,ilat,it])
     end
 
